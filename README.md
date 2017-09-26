@@ -4,7 +4,7 @@ GamePortalReactNative
 I create React Native project from Facebook's website(https://facebook.github.io/react-native/docs/getting-started.html)
 This readme file contains a very detailed instructions on running, testing on both ios and android platforms as well as many other instructions. I think it is really helpful so I don't make any changes to it. Later on we might not need that much.
 
-// TODO Haoran and Samuel: Simplify this readme file in later version
+## TODO Haoran and Samuel: Simplify this readme file in later version
 
 This project was bootstrapped with [Create React Native App](https://github.com/react-community/create-react-native-app).
 
