@@ -1,81 +1,73 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
-import React, { Component } from 'react';
-import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity
+import React, {
+    AppRegistry,
+    Component,
+    Text,
+    View,
+    Navigator,
+    AsyncStorage
 } from 'react-native';
 
-const FBSDK = require('react-native-fbsdk');
-const {
-  LoginManager,
-} = FBSDK;
+import * as firebase from 'firebase';
 
-export default class FirebaseLogin extends Component {
+import Signup from './src/pages/signup';
+import Account from './src/pages/account';
 
-  _fbLogin() {
-    LoginManager.logInWithReadPermissions(['public_profile']).then(
-      function(result) {
-        if (result.isCancelled) {
-          alert('Login cancelled');
+import Header from './src/components/header';
+
+let app = new Firebase('universalgamemaker.firebaseio.com');
+
+import styles from './src/styles/common-styles.js';
+
+export default class FirebaseLogin extends Component {    
+
+    constructor(){
+        super();
+        this.state = {
+            component: null,
+            loaded: false
+        };
+    }
+
+    componentWillMount(){
+        AsyncStorage.getItem('user_data').then((user_data_json) => {
+            let user_data = JSON.parse(user_data_json);
+            let component = {component: Signup};
+            if(user_data != null){
+                app.authWithCustomToken(user_data.token, (error, authData) => {
+                    if(error){
+                        this.setState(component);
+                    } else {
+                        this.setState({component: Account});
+                    }
+                });
+            } else {
+                this.setState(component);
+            }
+        });
+    }
+
+    render(){
+        if(this.state.component){
+            return (
+                <Navigator
+                    initialRoute={{component: this.state.component}}
+                    renderScene={(route, navigator) => {
+                        if(route.component){
+                            return React.createElement(route.component, { navigator });
+                        }
+                    }}
+                />
+            );
         } else {
-          alert('Login success with permissions: '
-            +result.grantedPermissions.toString());
+            return (
+                <View style={styles.container}>
+                    <Header text="React Native Firebase Auth" loaded={this.state.loaded} />  
+                    <View style={styles.body}></View>
+                </View>
+            );
         }
-      },
-      function(error) {
-        alert('Login fail with error: ' + error);
-      }
-    );
-  }
-  
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to our GamePortal!
-        </Text>
-        <TouchableOpacity onPress={this._fbLogin}>
-          <Text style={styles.instructions}>
-            Login with Facebook
-          </Text>
-        </TouchableOpacity>
-          <Text style={styles.instructions}>
-            To get started, edit index.ios.js
-          </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
-      </View>
-    );
-  }
-}
+    }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+}
 
 AppRegistry.registerComponent('FirebaseLogin', () => FirebaseLogin);
