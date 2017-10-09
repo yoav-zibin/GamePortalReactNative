@@ -1,6 +1,6 @@
-import React, {
+import React, { Component } from 'react';
+import {
     AppRegistry,
-    Component,
     StyleSheet,
     Text,
     TextInput,
@@ -14,9 +14,9 @@ import Header from '../components/header';
 import Signup from './signup';
 import Account from './account';
 
-import Firebase from 'firebase';
+// import Firebase from 'firebase';
 
-let app = new Firebase('universalgamemaker.firebaseio.com');
+// let app = new Firebase('universalgamemaker.firebaseio.com');
 
 import styles from '../styles/common-styles.js';
 

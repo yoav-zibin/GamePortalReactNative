@@ -1,6 +1,6 @@
-import React, {
+import React, { Component } from 'react';
+import {
   AppRegistry,
-  Component,
   StyleSheet,
   Text,
   View,
@@ -15,9 +15,9 @@ import Login from './login';
 
 import styles from '../styles/common-styles.js';
 
-import Firebase from 'firebase';
+// import Firebase from 'firebase';
 
-let app = new Firebase('universalgamemaker.firebaseio.com');
+// let app = new Firebase('universalgamemaker.firebaseio.com');
 
 export default class Account extends Component {
 

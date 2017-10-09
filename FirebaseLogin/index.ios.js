@@ -1,27 +1,28 @@
-import React, {
+import React, { Component } from 'react';
+
+import {
     AppRegistry,
-    Component,
     Text,
     View,
     Navigator,
     AsyncStorage
 } from 'react-native';
 
-import * as firebase from 'firebase';
+// import * as firebase from 'firebase';
 
 import Signup from './src/pages/signup';
 import Account from './src/pages/account';
 
 import Header from './src/components/header';
 
-let app = new Firebase('universalgamemaker.firebaseio.com');
+// let app = new Firebase('universalgamemaker.firebaseio.com');
 
 import styles from './src/styles/common-styles.js';
 
 export default class FirebaseLogin extends Component {    
 
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state = {
             component: null,
             loaded: false
@@ -48,6 +49,7 @@ export default class FirebaseLogin extends Component {
 
     render(){
         if(this.state.component){
+            console.log('signup component');
             return (
                 <Navigator
                     initialRoute={{component: this.state.component}}
