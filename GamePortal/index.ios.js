@@ -10,10 +10,10 @@ import {
 
 // import * as firebase from 'firebase';
 
-import Signup from './src/pages/signup';
-import Account from './src/pages/account';
+import Signup from './src/ios/pages/signup';
+import Account from './src/ios/pages/account';
 
-import Header from './src/components/header';
+import Header from './src/ios/components/header';
 
 // let app = new Firebase('universalgamemaker.firebaseio.com');
 
