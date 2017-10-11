@@ -19,7 +19,7 @@ import Header from './src/ios/components/header';
 
 import styles from './src/styles/common-styles.js';
 
-export default class FirebaseLogin extends Component {    
+export default class GamePortalReactNative extends Component {    
 
     constructor(props){
         super(props);
@@ -72,4 +72,4 @@ export default class FirebaseLogin extends Component {
 
 }
 
-AppRegistry.registerComponent('FirebaseLogin', () => FirebaseLogin);
+AppRegistry.registerComponent('GamePortalReactNative', () => GamePortalReactNative);
