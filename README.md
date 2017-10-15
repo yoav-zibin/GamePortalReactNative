@@ -25,6 +25,18 @@ Implementation by Samuel Smith and Haoran (Andy) Ma.
 - install the required node modules `npm install`
 - tell react-native to generate the ios and android projects `react-native eject`
 
+### iOS Steps (These WILL be reduced as time goes on)
+
+- Open up the `ios` folder as a project for Xcode
+- (Note: if you initiate a new react-native project using `create-react-native-app` or `react-native eject` from a existing project, Xcode will create a objective-c version Xcode project under your `ios` folder.)
+- Third party usage:
+    1. Facebook
+        - Follow exactly every step from this link: [Getting started for iOS SDK](https://developers.facebook.com/docs/ios/getting-started)
+        - Use `"react-native-fbsdk": "^0.6.0"` dependency. This will avoid a link error when you link react-native-fbsdk.
+        - Make sure all frameworks are in the `Framework Search Path` of your Xcode project.
+        - In Xcode's menu, click `Product`, and choose `Scheme`, `Manage Schemes`. Add `React` as an autocreate scheme.
+        - Trouble shooting. See trouble shooting part of this link: [React Native FBSDK](https://github.com/facebook/react-native-fbsdk). It also contains Andriod's trouble shooting.
+
 ### Android-Specific Steps (These WILL be reduced as time goes on)
 
 - Open up the `android` folder as a project in Android Studio

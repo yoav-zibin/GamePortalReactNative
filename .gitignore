@@ -56,3 +56,4 @@ fastlane/screenshots
 android/
 ios/
 !GamePortal/src/android/
+!GamePortal/src/ios/
