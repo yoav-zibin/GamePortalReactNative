@@ -78,7 +78,7 @@ export default class SplashComponent extends Component {
     }
 
     render() {
-        const { loading, loggedIn, username, avatarURL} = this.props; //state
+        const { loading, loggedIn, username, avatarURL } = this.props; //state
         const { switchScreen } = this.props; //actions
 
         if (!loading) {

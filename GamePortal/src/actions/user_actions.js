@@ -1,5 +1,5 @@
 /*
-Set the currently logged in user
+Set the currently logged in user data
  */
 export function setLoggedInUser(username, avatarURL) {
     return {

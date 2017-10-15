@@ -1,75 +1,110 @@
-import React, { Component } from 'react';
-
+import React, {Component} from 'react';
 import {
-    AppRegistry,
-    Text,
-    View,
-    Navigator,
-    AsyncStorage
+    AppRegistry, BackHandler, View
 } from 'react-native';
 
-// import * as firebase from 'firebase';
+import {
+    Provider
+} from 'react-redux';
 
-import Signup from './src/ios/pages/signup';
-import Account from './src/ios/pages/account';
+import * as firebase from 'firebase';
 
-import Header from './src/ios/components/header';
+import store from './src/store/configure_store';
+import styles from './src/styles/ios_style';
+import { SplashContainer } from './src/ios/containers/splash_container';
+import { LoginDefaultContainer } from './src/ios/containers/login_default_container'
+import { HomeContainer } from './src/ios/containers/home_container'
+import { LoginEmailContainer } from "./src/ios/containers/login_email_container";
+import { CreateAccountContainer } from "./src/ios/containers/create_account_container";
 
-// let app = new Firebase('universalgamemaker.firebaseio.com');
 
-import styles from './src/styles/common-styles.js';
+import {switchScreen} from "./src/actions/screen_actions";
 
-export default class GamePortalReactNative extends Component {    
 
-    constructor(props){
+// Initialize Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyDmRQIcz7cPJXu28k9bo43b9nqQCI4naxE",
+    authDomain: "universalgamemaker.firebaseapp.com",
+    databaseURL: "https://universalgamemaker.firebaseio.com",
+    storageBucket: "universalgamemaker.appspot.com"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+export default class GamePortalReactNative extends Component {
+
+    constructor(props) {
         super(props);
-        this.state = {
-            component: null,
-            loaded: false
-        };
-    }
 
-    componentWillMount(){
-        AsyncStorage.getItem('user_data').then((user_data_json) => {
-            let user_data = JSON.parse(user_data_json);
-            let component = {component: Signup};
-            if(user_data != null){
-                app.authWithCustomToken(user_data.token, (error, authData) => {
-                    if(error){
-                        this.setState(component);
-                    } else {
-                        this.setState({component: Account});
-                    }
-                });
-            } else {
-                this.setState(component);
-            }
+        this.state = {
+            screen: store.getState().screen.screen
+        };
+
+        store.subscribe(() => {
+           if (store.getState().screen.screen !== this.state.screen) {
+               this.setState({
+                   screen: store.getState().screen.screen
+               });
+           }
         });
     }
 
-    render(){
-        if(this.state.component){
-            console.log('signup component');
-            return (
-                <Navigator
-                    initialRoute={{component: this.state.component}}
-                    renderScene={(route, navigator) => {
-                        if(route.component){
-                            return React.createElement(route.component, { navigator });
-                        }
-                    }}
-                />
-            );
-        } else {
-            return (
-                <View style={styles.container}>
-                    <Header text="React Native Firebase Auth" loaded={this.state.loaded} />  
-                    <View style={styles.body}></View>
-                </View>
-            );
+    componentDidMount() {
+        BackHandler.addEventListener("hardwareBackPress", () => {
+            let screen = this.state.screen;
+            let newScreen = undefined;
+
+            switch (screen) {
+                case 'LoginDefault':
+                    newScreen = 'Splash';
+                    break;
+                case 'LoginEmail':
+                    newScreen = 'LoginDefault';
+                    break;
+                case 'CreateAccount':
+                    newScreen = 'LoginEmail';
+                    break;
+                case 'Home':
+                    newScreen = 'Splash';
+                    break;
+                case 'Splash':
+                    return false;
+            }
+
+            if (newScreen !== undefined) {
+                store.dispatch(switchScreen(newScreen))
+            }
+
+            return true;
+        });
+    }
+
+    renderContainer() {
+        let screen = this.state.screen;
+
+        switch (screen) {
+            case 'LoginDefault':
+                return (<LoginDefaultContainer />);
+            case 'LoginEmail':
+                return (<LoginEmailContainer />);
+            case 'CreateAccount':
+                return (<CreateAccountContainer />);
+            case 'Home':
+                return (<HomeContainer />);
+            default:
+                return (<SplashContainer/>);
         }
     }
 
+    render() {
+        return (
+            <Provider store={store}>
+                <View style={styles.container}>
+                    {this.renderContainer()}
+                </View>
+            </Provider>
+        )
+    }
 }
 
 AppRegistry.registerComponent('GamePortalReactNative', () => GamePortalReactNative);
