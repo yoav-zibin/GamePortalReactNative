@@ -9,16 +9,16 @@ import {
 
 import * as firebase from 'firebase';
 
-import store from './src/store/configure_store';
-import styles from './src/styles/ios_style';
-import { SplashContainer } from './src/ios/containers/splash_container';
-import { LoginDefaultContainer } from './src/ios/containers/login_default_container'
-import { HomeContainer } from './src/ios/containers/home_container'
-import { LoginEmailContainer } from "./src/ios/containers/login_email_container";
-import { CreateAccountContainer } from "./src/ios/containers/create_account_container";
+import store from './src/frontend/store/configure_store';
+import styles from './src/frontend/styles/common_style';
+import { SplashContainer } from './src/frontend/containers/splash_container';
+import { LoginDefaultContainer } from './src/frontend/containers/ios/login_default_container'
+import { HomeContainer } from './src/frontend/containers/home_container'
+import { LoginEmailContainer } from "./src/frontend/containers/login_email_container";
+import { CreateAccountContainer } from "./src/frontend/containers/create_account_container";
 
 
-import {switchScreen} from "./src/actions/screen_actions";
+import {switchScreen} from "./src/frontend/actions/screen_actions";
 
 
 // Initialize Firebase
