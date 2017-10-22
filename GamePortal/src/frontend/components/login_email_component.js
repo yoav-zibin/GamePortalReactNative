@@ -20,7 +20,7 @@ export default class LoginEmailComponent extends Component {
         setLoading(true);
 
         firebase.auth().signInWithEmailAndPassword(this.emailAddress, this.password).then((firebaseUser) => { //firebase login successful
-            setLoggedInUser(firebaseUser.displayName, JSON.stringify(null));
+            setLoggedInUser(firebaseUser.displayName, JSON.stringify(null), firebaseUser.uid);
             setLoading(false);
             switchScreen('Home');
         }).catch((error) => { // login to firebase failed

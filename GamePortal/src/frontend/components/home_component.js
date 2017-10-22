@@ -6,11 +6,25 @@ import Tabs from 'react-native-tabs';
 import * as firebase from 'firebase';
 
 import styles from '../styles/common_style'
+import { getRecentlyConnected } from "../../backend/users/recently_connected";
 
 export default class HomeComponent extends Component {
 
     constructor(props) {
         super(props);
+    }
+
+    _addUserToState(user) {
+        console.log(JSON.stringify(user));
+    }
+
+    componentWillMount() {
+
+        AsyncStorage.getItem('userData').then(udJSON => {
+           let userData = JSON.parse(udJSON);
+
+           getRecentlyConnected(userData.firebaseUserId, this._addUserToState);
+        });
     }
 
     _signOut() {

@@ -5,6 +5,7 @@ import { AsyncStorage, Button, Image, Text, TextInput, View } from 'react-native
 import * as firebase from 'firebase';
 
 import styles from '../styles/common_style'
+import { firebaseConnect } from "../../backend/users/login";
 
 export default class CreateAccountComponent extends Component {
 
@@ -26,7 +27,8 @@ export default class CreateAccountComponent extends Component {
             firebaseUser.updateProfile({
                 displayName: this.displayName
             }).then(() => {
-                setLoggedInUser(this.displayName, null);
+                firebaseConnect(firebaseUser.uid);
+                setLoggedInUser(this.displayName, null, firebaseUser.uid);
                 setLoading(false);
                 switchScreen('Home')
             });

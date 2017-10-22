@@ -3,7 +3,8 @@ export const initialState = {
         loggedIn: false,
         loggingIn: false,
         username: undefined,
-        avatarURL: undefined
+        avatarURL: undefined,
+        firebaseUserId: undefined,
     },
 
     screen: {
@@ -13,5 +14,9 @@ export const initialState = {
 
     home: {
         tab: 'tabFriends'
+    },
+
+    recentlyConnected: {
+        users: []
     }
 };

@@ -14,7 +14,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     switchScreen: screen => dispatch(switchScreen(screen)),
     setLoading: loading => dispatch(setLoading(loading)),
-    setLoggedInUser: (username, avatarURL) => dispatch(setLoggedInUser(username, avatarURL))
+    setLoggedInUser: (username, avatarURL, firebaseUserId) => dispatch(setLoggedInUser(username, avatarURL, firebaseUserId))
 });
 
 export const LoginEmailContainer = connect(mapStateToProps, mapDispatchToProps)(LoginEmailComponent);
