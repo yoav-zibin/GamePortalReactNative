@@ -2,6 +2,14 @@ import { AsyncStorage } from 'react-native';
 
 import * as firebase from 'firebase';
 
+function firebaseConnect(firebaseUserId) {
+    let conId = Math.random().toString().substr(2) + 'abcdef';
+    firebase.database().ref('gamePortal/recentlyConnected/' + conId).set({
+        userId: firebaseUserId,
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+    });
+}
+
 function firebaseLoginFlow(loginObject) {
     console.ignoredYellowBox = ['Setting a timer'];
 
@@ -13,7 +21,8 @@ function firebaseLoginFlow(loginObject) {
                 'credentialType': loginObject.credentialType,
                 'accessToken': loginObject.accessToken,
                 'username': firebaseUser.displayName ? firebaseUser.displayName : "",
-                'avatarURL': firebaseUser.photoURL ? firebaseUser.photoURL : ""
+                'avatarURL': firebaseUser.photoURL ? firebaseUser.photoURL : "",
+                'firebaseUserId': firebaseUser.uid
             };
 
             AsyncStorage.setItem('userData', JSON.stringify(userData));
@@ -27,11 +36,6 @@ function firebaseLoginFlow(loginObject) {
                     let userObject = getUserObject(firebaseUser);
                     firebase.database().ref('/users/' + userId).set(userObject);
                 }
-
-                firebase.database().ref('gamePortal/recentlyConnected/' + (Math.random() + `xxxx`).substr(2)).set({
-                    userId: userId,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
-                });
 
                 resolve(firebaseUser);
             }).catch(error => reject(error));
@@ -63,4 +67,4 @@ function getUserObject(firebaseUser) {
     };
 }
 
-export default firebaseLoginFlow;
+export { firebaseLoginFlow, firebaseConnect };

@@ -7,6 +7,9 @@ import {
 import * as firebase from 'firebase';
 
 import styles from '../styles/common_style'
+import { firebaseConnect} from "../../backend/users/login";
+import {switchScreen} from "../actions/screen_actions";
+import {setLoggingIn} from "../actions/user_actions";
 
 export default class SplashComponent extends Component {
 
@@ -32,7 +35,7 @@ export default class SplashComponent extends Component {
                     credential = firebase.auth.GoogleAuthProvider.credential(userData.accessToken);
                 } else if (userData.credentialType === 'email') {
                     firebase.auth().signInWithEmailAndPassword(userData.email, userData.password).then((firebaseUser) => {
-                        setLoggedInUser(userData.username, userData.avatarURL);
+                        setLoggedInUser(userData.username, userData.avatarURL, userData.firebaseUserId);
                         setLoading(false);
                     }).catch((err) => {
                         alert(err);
@@ -41,8 +44,8 @@ export default class SplashComponent extends Component {
                 }
 
                 if (credential !== null) {
-                    firebase.auth().signInWithCredential(credential).then((firebaseUser) => { //Firebase accepted credential
-                        setLoggedInUser(userData.username, userData.avatarURL);
+                    firebase.auth().signInWithCredential(credential).then(() => { //Firebase accepted credential
+                        setLoggedInUser(userData.username, userData.avatarURL, userData.firebaseUserId);
                         setLoading(false);
                     }, (error) =>{ //Firebase rejected Facebook login
                         alert(error);
@@ -58,6 +61,18 @@ export default class SplashComponent extends Component {
         }).catch((error) => {
             alert(error);
             setLoading(false);
+        });
+    }
+
+    _playAsSavedUser() {
+        const { setLoading, switchScreen } = this.props;
+
+        AsyncStorage.getItem('userData').then(udJSON => {
+            setLoading(true);
+            console.ignoredYellowBox = ['Setting a timer'];
+            firebaseConnect(JSON.parse(udJSON).firebaseUserId);
+            setLoading(false);
+            switchScreen('Home');
         });
     }
 
@@ -102,7 +117,7 @@ export default class SplashComponent extends Component {
                         </Text>
 
                         <Button
-                            onPress = {() => switchScreen('Home')}
+                            onPress = {() => this._playAsSavedUser()}
                             title = { continueMessage }
                         />
 

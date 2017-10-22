@@ -37,14 +37,15 @@ export default class LoginDefaultComponent extends Component {
                     'credentialType': credential_type,
                     'accessToken': token,
                     'username': firebaseUser.displayName,
-                    'avatarURL': firebaseUser.photoURL
+                    'avatarURL': firebaseUser.photoURL,
+                    'firebaseUserId': firebaseUser.uid
                 };
 
                 AsyncStorage.setItem('userData', JSON.stringify(userData));
 
                 //Go to the home page
 
-                setLoggedInUser(firebaseUser.displayName, firebaseUser.photoURL);
+                setLoggedInUser(firebaseUser.displayName, firebaseUser.photoURL, firebaseUser.uid);
                 switchScreen('Home');
 
             }, function (err) { //Firebase rejected Facebook login
@@ -103,7 +104,7 @@ export default class LoginDefaultComponent extends Component {
         setLoggingIn();
 
         firebase.auth().signInAnonymously().then(() => {
-            setLoggedInUser('Anonymous', JSON.stringify(null));
+            setLoggedInUser('Anonymous', JSON.stringify(null), JSON.stringify(null));
             switchScreen('Home');
         }).catch((error => {
             alert(error);

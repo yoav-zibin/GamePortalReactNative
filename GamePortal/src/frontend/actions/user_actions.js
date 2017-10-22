@@ -1,11 +1,12 @@
 /*
 Set the currently logged in user data
  */
-export function setLoggedInUser(username, avatarURL) {
+export function setLoggedInUser(username, avatarURL, firebaseUserId) {
     return {
         type: 'LOGGED_IN',
         username: username,
-        avatarURL: avatarURL
+        avatarURL: avatarURL,
+        firebaseUserId: firebaseUserId,
     }
 }
 
@@ -23,6 +24,6 @@ Set that a user is current in the process of logging in
  */
 export function setLoggingIn() {
     return {
-        type: 'LOGGING_IN'
+        type: 'LOGGING_IN',
     }
 }

@@ -7,21 +7,24 @@ export const userReducer = (state = initialState.user, action) => {
                 loggedIn: false,
                 loggingIn: true,
                 username: undefined,
-                avatarURL: undefined
+                avatarURL: undefined,
+                firebaseUserId: undefined,
             });
         case 'LOGGED_IN':
             return Object.assign({}, state, {
                 loggedIn: true,
                 loggingIn: false,
                 username: action.username,
-                avatarURL: action.avatarURL
+                avatarURL: action.avatarURL,
+                firebaseUserId: action.firebaseUserId,
             });
         case 'LOGGED_OUT':
             return Object.assign({}, state, {
                 loggedIn: false,
                 loggingIn: false,
                 username: undefined,
-                avatarURL: undefined
+                avatarURL: undefined,
+                firebaseUserId: undefined,
             });
         default:
             return state;

@@ -12,7 +12,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     switchScreen: screen => dispatch(switchScreen(screen)),
-    setLoggedInUser: (username, avatarURL) => dispatch(setLoggedInUser(username, avatarURL)),
+    setLoggedInUser: (username, avatarURL, firebaseUserId) => dispatch(setLoggedInUser(username, avatarURL, firebaseUserId)),
     setLoggedOut: () => dispatch(setLoggedOut()),
     setLoggingIn: () => dispatch(setLoggingIn())
 });

@@ -11,7 +11,7 @@ import {
 import { GoogleSignin } from 'react-native-google-signin';
 
 import styles from '../../styles/common_style'
-import firebaseLoginFlow from '../../../backend/user/login'
+import { firebaseLoginFlow, firebaseConnect } from '../../../backend/users/login'
 
 import * as firebase from 'firebase';
 
@@ -26,7 +26,7 @@ export default class LoginDefaultComponent extends Component {
         const { setLoggedInUser, setLoggedOut, switchScreen } = this.props; //actions
 
         if (success) {
-            setLoggedInUser(payload.displayName, payload.photoURL);
+            setLoggedInUser(payload.displayName, payload.photoURL, payload.uid);
             switchScreen('Home');
         } else {
             alert(payload);
@@ -43,6 +43,7 @@ export default class LoginDefaultComponent extends Component {
             };
 
             firebaseLoginFlow(loginObject).then(firebaseUser => {
+                firebaseConnect(firebaseUser.uid);
                 this._finishLogin(true, firebaseUser);
             });
         } else {
@@ -99,7 +100,7 @@ export default class LoginDefaultComponent extends Component {
         setLoggingIn();
 
         firebase.auth().signInAnonymously().then(() => {
-            setLoggedInUser('Anonymous', null);
+            setLoggedInUser('Anonymous', null, null);
             switchScreen('Home');
         }).catch((error => {
             alert(error);
