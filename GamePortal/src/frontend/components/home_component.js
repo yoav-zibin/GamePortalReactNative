@@ -23,7 +23,7 @@ export default class HomeComponent extends Component {
         AsyncStorage.getItem('userData').then(udJSON => {
            let userData = JSON.parse(udJSON);
 
-           getRecentlyConnected(userData.firebaseUserId, this._addUserToState);
+        //    getRecentlyConnected(userData.firebaseUserId, this._addUserToState);
         });
     }
 
@@ -43,6 +43,13 @@ export default class HomeComponent extends Component {
         });
     }
 
+    _goChatting() {
+        // Screen actions
+        const { switchScreen } = this.props;
+        // TODO: load last time chat room data
+        switchScreen('ChatRoom');
+    }
+
     _renderTab() {
         const { tab } = this.props;
 
@@ -50,7 +57,12 @@ export default class HomeComponent extends Component {
             case 'tabChats':
                 return (
                     <View>
-                        <Text>Chats</Text>
+                        <Button 
+                            style={styles.chatButton}
+                            onPress={() => this._goChatting()}
+                            title="Go Chatting"
+                        />
+                        <Text>Chat Histories</Text>
                     </View>
                 );
             case 'tabFriends':

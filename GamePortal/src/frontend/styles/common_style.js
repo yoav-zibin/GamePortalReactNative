@@ -49,6 +49,11 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
 
+    chatHeader: {
+        color: 'blue',
+        fontSize: 30
+    },
+
     welcome: {
         fontSize: 20,
         textAlign: 'center',
@@ -61,6 +66,11 @@ const styles = StyleSheet.create({
     },
 
     signoutButton: {
+        height: 10,
+        marginRight: 10
+    },
+
+    backButton: {
         height: 10,
         marginRight: 10
     },

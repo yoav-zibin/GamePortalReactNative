@@ -18,5 +18,15 @@ export const initialState = {
 
     recentlyConnected: {
         users: []
+    },
+
+    chatMessages: {
+        messages: []
+    },
+
+    chatRoomMeta: {
+        isFetching: false,
+        lastFetched: undefined,
+        height: 0
     }
 };

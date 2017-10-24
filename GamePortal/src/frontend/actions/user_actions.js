@@ -27,3 +27,12 @@ export function setLoggingIn() {
         type: 'LOGGING_IN',
     }
 }
+
+/*
+User joins the chat room, so fetch messages at that point.
+ */
+export function fetchMessages() {
+    return {
+        
+    }
+}

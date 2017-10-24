@@ -4,7 +4,6 @@ import { setLoggedInUser } from "../actions/user_actions";
 
 import LoginEmailComponent from '../components/login_email_component'
 
-
 const mapStateToProps = state => ({
     username: state.user.username,
     avatarURL: state.user.avatarURL,

@@ -1,4 +1,4 @@
-import { initialState } from '../store/initial_state'
+import { initialState } from '../store/initial_state';
 
 export const homeReducer = (state = initialState.home, action) => {
     switch (action.type) {

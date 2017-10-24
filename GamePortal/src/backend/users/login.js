@@ -3,8 +3,8 @@ import { AsyncStorage } from 'react-native';
 import * as firebase from 'firebase';
 
 function firebaseConnect(firebaseUserId) {
-    let conId = Math.random().toString().substr(2) + 'abcdef';
-    firebase.database().ref('gamePortal/recentlyConnected/' + conId).set({
+    let idSuffix = (Math.random().toString() + 'abcd').substr(2);
+    firebase.database().ref('gamePortal/recentlyConnected/' + idSuffix).set({
         userId: firebaseUserId,
         timestamp: firebase.database.ServerValue.TIMESTAMP
     });
