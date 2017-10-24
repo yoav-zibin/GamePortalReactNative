@@ -38,19 +38,42 @@ export default class HomeComponent extends Component {
         switchScreen('ChatRoom');
     }
 
+    _createGroup(firebaseUserId) {
+
+        let idSuffix = (Math.random().toString() + 'abcd').substr(2);
+        let groupName = 'test_group_name';
+
+        firebase.database().ref('gamePortal/groups/' + idSuffix).set({
+            participants: {
+                [firebaseUserId]: {participantIndex: 0}
+            },
+            groupName: groupName,
+            createdOn: firebase.database.ServerValue.TIMESTAMP,
+        });
+    }
+
     _renderTab() {
         const { tab, recentlyConnectedUsers, setRecentlyConnectedUsers } = this.props;
 
         switch(tab) {
             case 'tabChats':
+                // AsyncStorage.getItem('userData').then(udJSON => {
+                //     let userData = JSON.parse(udJSON);
+
+                //     getRecentlyConnected().then(connectionList => {
+                //         for (let connectionId in connectionList) {
+                            
+                //         }
+                //     })
+                // })
                 return (
                     <View>
                         <Button 
                             style={styles.chatButton}
-                            onPress={() => this._goChatting()}
-                            title="Go Chatting"
+                            onPress={() => this._createGroup(firebaseUserId)}
+                            title="Create New Group"
                         />
-                        <Text>Chat Histories</Text>
+                        
                     </View>
                 );
             case 'tabFriends':
@@ -118,8 +141,6 @@ export default class HomeComponent extends Component {
                         }
                     }).catch(error => alert(error));
                 });
-
-
 
                 let users = [];
                 if (recentlyConnectedUsers !== null && recentlyConnectedUsers.length > 0) {
