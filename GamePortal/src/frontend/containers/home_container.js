@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { switchScreen, setLoading } from "../actions/screen_actions";
 import { setLoggedOut } from "../actions/user_actions";
 import { switchTab } from "../actions/home_actions";
-import { setRecentlyConnectedUsers } from "../actions/recently_connected_actions";
+import { addRecentlyConnectedUser, resetRecentlyConnectedUsers, switchSelectUser } from "../actions/recently_connected_actions";
 
 import HomeComponent from '../components/home_component'
 
@@ -20,7 +20,9 @@ const mapDispatchToProps = dispatch => ({
     switchTab: tab => dispatch(switchTab(tab)),
     setLoading: loading => dispatch(setLoading(loading)),
     setLoggedOut: () => dispatch(setLoggedOut()),
-    setRecentlyConnectedUsers: user => dispatch(setRecentlyConnectedUsers(user)),
+    addRecentlyConnectedUser: user => dispatch(addRecentlyConnectedUser(user)),
+    resetRecentlyConnectedUsers: () => dispatch(resetRecentlyConnectedUsers()),
+    switchSelectUser: userId => dispatch(switchSelectUser(userId))
 });
 
 export const HomeContainer = connect(mapStateToProps, mapDispatchToProps)(HomeComponent);

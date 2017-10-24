@@ -1,9 +1,23 @@
 /*
- Sets the recently connected users
+ Add a new recently connected user
  */
-export function setRecentlyConnectedUsers(users) {
+export function addRecentlyConnectedUser(user) {
     return {
-        type: 'SET_USERS',
-        users: users
+        type: 'ADD_USER',
+        user: user
     }
+}
+
+export function resetRecentlyConnectedUsers() {
+    return {
+        type: 'RESET_USERS'
+    }
+}
+
+export function switchSelectUser(userId) {
+    return {
+        type: 'SWITCH',
+        userId: userId
+    }
+
 }
