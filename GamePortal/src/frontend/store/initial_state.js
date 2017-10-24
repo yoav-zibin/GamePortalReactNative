@@ -17,6 +17,7 @@ export const initialState = {
     },
 
     recentlyConnected: {
+        updated: false,
         users: []
     },
 

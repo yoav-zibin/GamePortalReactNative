@@ -56,7 +56,7 @@ export const sendMessage = (text, user) => {
             };
 
         const newMsgRef = firebase.database()
-                                  .ref('messages')
+                                  .ref('/gamePortal/groups/groupId${idSuffix}/messages/messageId${idSuffix}')
                                   .push();
         msg.id = newMsgRef.key;
         newMsgRef.set(msg);

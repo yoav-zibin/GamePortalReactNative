@@ -1,7 +1,7 @@
 /*
- Set the users that have recently connected to the service
+ Sets the recently connected users
  */
-export function setUsers(users) {
+export function setRecentlyConnectedUsers(users) {
     return {
         type: 'SET_USERS',
         users: users

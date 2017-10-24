@@ -7,24 +7,12 @@ import * as firebase from 'firebase';
 
 import styles from '../styles/common_style'
 import { getRecentlyConnected } from "../../backend/users/recently_connected";
+import { getPublicFields } from "../../backend/users/public_fields";
 
 export default class HomeComponent extends Component {
 
     constructor(props) {
         super(props);
-    }
-
-    _addUserToState(user) {
-        console.log(JSON.stringify(user));
-    }
-
-    componentWillMount() {
-
-        AsyncStorage.getItem('userData').then(udJSON => {
-           let userData = JSON.parse(udJSON);
-
-        //    getRecentlyConnected(userData.firebaseUserId, this._addUserToState);
-        });
     }
 
     _signOut() {
@@ -51,7 +39,7 @@ export default class HomeComponent extends Component {
     }
 
     _renderTab() {
-        const { tab } = this.props;
+        const { tab, recentlyConnectedUsers, setRecentlyConnectedUsers } = this.props;
 
         switch(tab) {
             case 'tabChats':
@@ -72,11 +60,116 @@ export default class HomeComponent extends Component {
                   </View>
                 );
             case 'tabActive':
-                return (
-                  <View>
-                      <Text>Online Users</Text>
-                  </View>
-                );
+
+                AsyncStorage.getItem('userData').then(udJSON => {
+                   let userData = JSON.parse(udJSON);
+
+                    getRecentlyConnected().then(connectionList => {
+
+                        for (let connectionId in connectionList) {
+                            let broken = false;
+
+                            if (connectionList.hasOwnProperty(connectionId)) {
+                                let connection = connectionList[connectionId];
+                                let userId = connection.userId;
+
+                                if (userId === userData.firebaseUserId) {
+                                    continue;
+                                }
+
+                                getPublicFields(userId).then(publicFields => {
+
+                                    if (JSON.stringify(publicFields) !== 'null') {
+                                        //get the current connected users
+                                        let updatedList = [];
+
+                                        if (recentlyConnectedUsers !== null) {
+                                            for (let u = 0; u < recentlyConnectedUsers.length; u++) {
+                                                if (recentlyConnectedUsers[u].userId !== userId) {
+                                                    updatedList.push(recentlyConnectedUsers[u]);
+                                                } else {
+                                                    broken = true;
+                                                    break;
+                                                }
+                                            }
+
+                                            if (broken) {
+                                                return;
+                                            }
+                                        }
+
+                                        while (updatedList.length >= 20) {
+                                            updatedList.pop();
+                                        }
+
+                                        //add user to top
+                                        updatedList.unshift({
+                                            userId: userId,
+                                            displayName: publicFields.displayName,
+                                            avatarURL: publicFields.avatarImageUrl ? publicFields.avatarImageUrl : null
+                                        });
+
+                                        //set connected users as list
+                                        setRecentlyConnectedUsers(updatedList);
+                                    }
+
+                                }).catch(error => alert(error));
+                            }
+                        }
+                    }).catch(error => alert(error));
+                });
+
+
+
+                let users = [];
+                if (recentlyConnectedUsers !== null && recentlyConnectedUsers.length > 0) {
+                    //draw recently connected users
+
+                    for (let u = 0; u < recentlyConnectedUsers.length; u++) {
+                        let user = recentlyConnectedUsers[u];
+
+                        let userElement = (
+                            <View key={u} style={styles.listItemView}>
+                                <Image
+                                    style={styles.profilePicture}
+                                    source={{uri: user.avatarURL}}
+                                />
+                                <Text>{user.displayName}</Text>
+
+                                <Button
+                                    onPress = {() => alert("Profile")}
+                                    title="Profile"
+                                    color="#B4B105"
+                                />
+
+
+                                <Button
+                                    onPress = {() => alert("Select")}
+                                    title="Select"
+                                    color="#62B36C"
+                                />
+                            </View>
+                        );
+
+                        users.push(userElement);
+                    }
+
+                    return (
+                      <View style={styles.container}>
+                          {users}
+                      </View>
+                    );
+
+                } else {
+                    return (
+                        <View style={styles.container}>
+                            <Text>No Recently Connected Users</Text>
+                        </View>
+                    )
+                }
+
+                break;
+
             default:
                 return (
                   <View>
