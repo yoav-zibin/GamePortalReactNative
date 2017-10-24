@@ -37,6 +37,17 @@ const styles = StyleSheet.create({
         width: width
     },
 
+    listItemView: {
+        flex: 0.1,
+        borderColor: '#f5fdff',
+        borderWidth: 2,
+        backgroundColor: '#bae9fb',
+        width: width,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+
     profilePicture: {
         marginLeft: 10,
         width: 50,
