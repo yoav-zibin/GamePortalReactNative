@@ -15,6 +15,47 @@ export default class HomeComponent extends Component {
         super(props);
     }
 
+    componentWillMount() {
+
+        console.log("Called");
+
+        const { addRecentlyConnectedUser, resetRecentlyConnectedUsers } = this.props;
+        resetRecentlyConnectedUsers();
+
+
+        AsyncStorage.getItem('userData').then(udJSON => {
+            let userData = JSON.parse(udJSON);
+
+            getRecentlyConnected().then(connectionList => {
+
+                for (let connectionId in connectionList) {
+
+                    if (connectionList.hasOwnProperty(connectionId)) {
+                        let connection = connectionList[connectionId];
+                        let userId = connection.userId;
+
+                        if (userId === userData.firebaseUserId) {
+                            continue;
+                        }
+
+                        getPublicFields(userId).then(publicFields => {
+
+                            if (JSON.stringify(publicFields) !== 'null') {
+                                //set connected users as list
+                                addRecentlyConnectedUser({
+                                    displayName: publicFields.displayName,
+                                    avatarURL: publicFields.avatarImageUrl,
+                                    userId: userId,
+                                    selected: false
+                                });
+                            }
+                        }).catch(error => alert(error));
+                    }
+                }
+            }).catch(error => alert(error));
+        });
+    }
+
 
     _signOut() {
 
@@ -33,7 +74,7 @@ export default class HomeComponent extends Component {
     }
 
     _renderTab() {
-        const { tab, recentlyConnectedUsers, setRecentlyConnectedUsers } = this.props;
+        const { tab, recentlyConnectedUsers, switchSelectUser } = this.props;
 
         switch(tab) {
             case 'tabChats':
@@ -49,73 +90,35 @@ export default class HomeComponent extends Component {
                   </View>
                 );
             case 'tabActive':
-
-                AsyncStorage.getItem('userData').then(udJSON => {
-                   let userData = JSON.parse(udJSON);
-
-                    getRecentlyConnected().then(connectionList => {
-
-                        for (let connectionId in connectionList) {
-                            let broken = false;
-
-                            if (connectionList.hasOwnProperty(connectionId)) {
-                                let connection = connectionList[connectionId];
-                                let userId = connection.userId;
-
-                                if (userId === userData.firebaseUserId) {
-                                    continue;
-                                }
-
-                                getPublicFields(userId).then(publicFields => {
-
-                                    if (JSON.stringify(publicFields) !== 'null') {
-                                        //get the current connected users
-                                        let updatedList = [];
-
-                                        if (recentlyConnectedUsers !== null) {
-                                            for (let u = 0; u < recentlyConnectedUsers.length; u++) {
-                                                if (recentlyConnectedUsers[u].userId !== userId) {
-                                                    updatedList.push(recentlyConnectedUsers[u]);
-                                                } else {
-                                                    broken = true;
-                                                    break;
-                                                }
-                                            }
-
-                                            if (broken) {
-                                                return;
-                                            }
-                                        }
-
-                                        while (updatedList.length >= 20) {
-                                            updatedList.pop();
-                                        }
-
-                                        //add user to top
-                                        updatedList.unshift({
-                                            userId: userId,
-                                            displayName: publicFields.displayName,
-                                            avatarURL: publicFields.avatarImageUrl ? publicFields.avatarImageUrl : null
-                                        });
-
-                                        //set connected users as list
-                                        setRecentlyConnectedUsers(updatedList);
-                                    }
-
-                                }).catch(error => alert(error));
-                            }
-                        }
-                    }).catch(error => alert(error));
-                });
-
-
-
                 let users = [];
                 if (recentlyConnectedUsers !== null && recentlyConnectedUsers.length > 0) {
-                    //draw recently connected users
+
+                    let oneSelected = false;
 
                     for (let u = 0; u < recentlyConnectedUsers.length; u++) {
                         let user = recentlyConnectedUsers[u];
+
+                        let selectedButton = undefined;
+
+                        if (user.selected) {
+                            oneSelected = true;
+                            selectedButton = (
+                                <Button
+                                    onPress = {() => switchSelectUser(user.userId)}
+                                    title="Deselect"
+                                    color="#FBB5B0"
+                                />
+                            );
+                        } else {
+                            selectedButton = (
+                                <Button
+                                    onPress = {() => switchSelectUser(user.userId)}
+                                    title="Select"
+                                    color="#62B36C"
+                                />
+                            );
+                        }
+
 
                         let userElement = (
                             <View key={u} style={styles.listItemView}>
@@ -131,20 +134,27 @@ export default class HomeComponent extends Component {
                                     color="#B4B105"
                                 />
 
-
-                                <Button
-                                    onPress = {() => alert("Select")}
-                                    title="Select"
-                                    color="#62B36C"
-                                />
+                                {selectedButton}
                             </View>
                         );
 
                         users.push(userElement);
                     }
 
+                    let createGroup = undefined;
+                    if (oneSelected) {
+                        createGroup = (
+                            <Button
+                                onPress = {() => alert("Create Group")}
+                                title="Create Group"
+                            />
+                        );
+                    }
+
                     return (
                       <View style={styles.container}>
+                          {createGroup}
+                          <Text>{'\n\n'}</Text>
                           {users}
                       </View>
                     );
