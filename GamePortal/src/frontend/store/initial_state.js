@@ -21,13 +21,27 @@ export const initialState = {
         users: []
     },
 
-    chatMessages: {
-        messages: []
+    group: {
+        groupId: undefined,
+        groupName: undefined,
+        createdOn: undefined,
+        participants: [],
+        messages: [],
+        matches: []
     },
 
-    chatRoomMeta: {
+    chatRoom: {
+        myGroups: [],
+        messages: [],
         isFetching: false,
         lastFetched: undefined,
         height: 0
+    },
+
+    message: {
+        messageId: undefined,
+        message: undefined,
+        timestamp: undefined,
+        senderUid: undefined
     }
 };

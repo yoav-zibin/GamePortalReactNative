@@ -16,6 +16,7 @@ import { LoginDefaultContainer } from './src/frontend/containers/android/login_d
 import { HomeContainer } from './src/frontend/containers/home_container'
 import { LoginEmailContainer } from "./src/frontend/containers/login_email_container";
 import { CreateAccountContainer } from "./src/frontend/containers/create_account_container";
+import { ChatContainer } from './src/frontend/containers/chat_container';
 
 
 import {switchScreen} from "./src/frontend/actions/screen_actions";
@@ -91,6 +92,8 @@ export default class GamePortalReactNative extends Component {
                 return (<CreateAccountContainer />);
             case 'Home':
                 return (<HomeContainer />);
+            case 'Chat':
+                return (<ChatContainer />);
             default:
                 return (<SplashContainer/>);
         }

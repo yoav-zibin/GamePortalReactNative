@@ -92,7 +92,7 @@ export default class GamePortalReactNative extends Component {
                 return (<CreateAccountContainer />);
             case 'Home':
                 return (<HomeContainer />);
-            case 'ChatRoom':
+            case 'Chat':
                 return (<ChatContainer />);
             default:
                 return (<SplashContainer/>);

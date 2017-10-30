@@ -7,17 +7,17 @@ const messageInitialState = {
     author: undefined
 }
 
-const message = (state = messageInitialState, action) => {
-    switch (action.type) {
-        case 'ADD_MESSAGE':
-        case 'SEND_MESSAGE':
-        default:
-            return state
-    }
-}
+// const messageReducer = (state = messageInitialState, action) => {
+//     switch (action.type) {
+//         case 'ADD_MESSAGE':
+//         case 'SEND_MESSAGE':
+//         default:
+//             return state
+//     }
+// }
 
 // Create new messages list by old messages
-export const chatMessagesReducer = (state = [], action) => {
+export const messageReducer = (state = [], action) => {
     switch (action.type) {
         case 'ADD_MESSAGE':
             if (state.map(m => m.id).includes(action.id)) {

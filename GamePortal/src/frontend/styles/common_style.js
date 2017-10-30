@@ -13,6 +13,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5FCFF',
     },
 
+    headerContainer: {
+        flex: 1,
+    },
+
     tabbedContainer: {
         flex: 0.9,
         flexDirection: 'column',

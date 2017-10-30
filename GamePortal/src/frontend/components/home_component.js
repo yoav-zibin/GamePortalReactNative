@@ -1,6 +1,18 @@
 import React, {Component} from 'react';
 
-import { AsyncStorage, Button, Image, Text, View } from 'react-native';
+import {
+    AsyncStorage, 
+    Button, 
+    Image, 
+    Text, 
+    View,
+    SectionList,
+    FlatList,
+    Header
+} from 'react-native';
+
+import { List, ListItem } from 'react-native-elements';
+
 import Tabs from 'react-native-tabs';
 
 import * as firebase from 'firebase';
@@ -8,6 +20,7 @@ import * as firebase from 'firebase';
 import styles from '../styles/common_style'
 import { getRecentlyConnected } from "../../backend/users/recently_connected";
 import { getPublicFields } from "../../backend/users/public_fields";
+import { getMyGroups, getGroupObject } from '../../backend/users/groups';
 
 export default class HomeComponent extends Component {
 
@@ -19,12 +32,13 @@ export default class HomeComponent extends Component {
 
         console.log("Called");
 
-        const { addRecentlyConnectedUser, resetRecentlyConnectedUsers } = this.props;
+        // actions
+        const { addMyGroups, addRecentlyConnectedUser, resetRecentlyConnectedUsers } = this.props;
         resetRecentlyConnectedUsers();
-
 
         AsyncStorage.getItem('userData').then(udJSON => {
             let userData = JSON.parse(udJSON);
+            let myUserId = userData.firebaseUserId;
 
             getRecentlyConnected().then(connectionList => {
 
@@ -53,9 +67,28 @@ export default class HomeComponent extends Component {
                     }
                 }
             }).catch(error => alert(error));
+
+            getMyGroups(myUserId).then(myGroupList => {
+
+                for (let groupId in myGroupList) {
+
+                    getGroupObject(groupId).then(group => {
+                        group.groupId = groupId;
+                        addMyGroups(group);
+                    }).catch(error => alert(error));
+                }
+
+            }).catch(error => alert(error));
         });
     }
 
+    // _retrieveMyData() {
+    //     let data;
+    //     AsyncStorage.getItem('userData').then(udJSON => {
+    //         data = JSON.parse(udJSON);
+    //     });
+    //     return data;
+    // }
 
     _signOut() {
 
@@ -73,25 +106,93 @@ export default class HomeComponent extends Component {
         });
     }
 
-    _goChatting() {
-        // Screen actions
-        const { switchScreen } = this.props;
-        // TODO: load last time chat room data
-        switchScreen('ChatRoom');
+    _goChatting(group) {
+        const { switchScreen, loadCurrentGroup } = this.props;
+        // Update current group
+        loadCurrentGroup(group);
+        switchScreen('Chat');
     }
 
-    _createGroup(firebaseUserId) {
+    _createGroup(users) {
 
-        let idSuffix = (Math.random().toString() + 'abcd').substr(2);
-        let groupName = 'test_group_name';
+        const { createGroup, addMyGroups } = this.props;
 
-        firebase.database().ref('gamePortal/groups/' + idSuffix).set({
-            participants: {
-                [firebaseUserId]: {participantIndex: 0}
-            },
-            groupName: groupName,
-            createdOn: firebase.database.ServerValue.TIMESTAMP,
+        AsyncStorage.getItem('userData').then(udJSON => {
+
+            let userData = JSON.parse(udJSON);
+            let creatorId = userData.firebaseUserId;
+            let createdOn = firebase.database.ServerValue.TIMESTAMP;
+            let groupName = 'new_group_name';
+
+            let idSuffix = (Math.random().toString() + 'xxxx').substr(2);
+
+            let groupsRef = firebase.database().ref('gamePortal/groups/');
+
+            let participants = {}
+            participants[creatorId] = {participantIndex: 0};
+            for (let p = 0; p < users.length; p++) {
+                let participant = users[p];
+                participants[participant.userId] = {participantIndex: p + 1};
+            }
+
+            let group = {
+                participants: participants,
+                groupName: groupName,
+                createdOn: createdOn,
+                messages: '',
+                matches: ''
+            }
+
+            groupId = groupsRef.push(group).key;
+
+            firebase.database().ref('users/' + creatorId + '/privateButAddable/groups/' + groupId).set({
+                addedByUid: creatorId,
+                timestamp: createdOn
+            });
+
+            for (let i = 0; i < users.length; i++) {
+                let uid = users[i].userId;
+                firebase.database().ref('users/' + uid + '/privateButAddable/groups/' + groupId).set({
+                    addedByUid: creatorId,
+                    timestamp: createdOn
+                });
+            }
+
+            addMyGroups(group);
         });
+    }
+
+    // _renderSeparator = () => {
+    //     return (
+    //       <View
+    //         style={{
+    //           height: 1,
+    //           width: "86%",
+    //           backgroundColor: "#CED0CE",
+    //           marginLeft: "14%"
+    //         }}
+    //       />
+    //     );
+    //   };
+
+    _renderChat() {
+        const { myGroups } = this.props;
+        return (
+            <List>
+                <FlatList
+                    data = { myGroups }
+                    keyExtractor = {item => item.groupId}
+                    renderItem = {({ item }) => (
+                        <ListItem
+                        roundAvatar
+                        title = {`${item.groupName}`}
+                        subtitle = {`${item.createdOn}`}
+                        onPress = {() => this._goChatting(item)}
+                        />
+                    )}
+                />
+            </List>
+        );
     }
 
     _renderTab() {
@@ -99,24 +200,8 @@ export default class HomeComponent extends Component {
 
         switch(tab) {
             case 'tabChats':
-                // AsyncStorage.getItem('userData').then(udJSON => {
-                //     let userData = JSON.parse(udJSON);
-
-                //     getRecentlyConnected().then(connectionList => {
-                //         for (let connectionId in connectionList) {
-                            
-                //         }
-                //     })
-                // })
                 return (
-                    <View>
-                        <Button 
-                            style={styles.chatButton}
-                            onPress={() => this._createGroup(firebaseUserId)}
-                            title="Create New Group"
-                        />
-                        
-                    </View>
+                    this._renderChat()
                 );
             case 'tabFriends':
                 return (
@@ -129,7 +214,9 @@ export default class HomeComponent extends Component {
                 if (recentlyConnectedUsers !== null && recentlyConnectedUsers.length > 0) {
 
                     let oneSelected = false;
+                    let selectedUsers = [];
 
+                    // List all the active users
                     for (let u = 0; u < recentlyConnectedUsers.length; u++) {
                         let user = recentlyConnectedUsers[u];
 
@@ -176,13 +263,22 @@ export default class HomeComponent extends Component {
                     }
 
                     let createGroup = undefined;
+
                     if (oneSelected) {
+                        // Create a new group with selected users
+                        for (let u = 0; u < recentlyConnectedUsers.length; u++) {
+                            let user = recentlyConnectedUsers[u];
+                            if (user.selected) {
+                                selectedUsers.push(user);
+                            }
+                        }
                         createGroup = (
+                            // TODO: Need to add a page to initialize group info
                             <Button
-                                onPress = {() => alert("Create Group")}
+                                onPress = {() => this._createGroup(selectedUsers)}
                                 title="Create Group"
                             />
-                        );
+                        );    
                     }
 
                     return (

@@ -5,7 +5,7 @@ function getPublicFields(userId) {
         firebase.database().ref('users/' + userId + "/publicFields").once('value').then(value => {
             let pfJSON = JSON.stringify(value);
             let publicFields = JSON.parse(pfJSON);
-
+            
             resolve(publicFields);
         }).catch(error => reject(error));
     });

@@ -2,8 +2,11 @@ import React, {Component} from 'react';
 
 import ReactNative from 'react-native';
 
-import { AsyncStorage, Button, Image, Text, View, TextInput } from 'react-native';
+import { List, ListItem } from 'react-native-elements';
+import NavigationBar from 'react-native-navbar';
+import { AsyncStorage, Button, Image, Text, View, TextInput, FlatList } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { getGroupMessages, getMessageObject } from '../../backend/users/groups';
 
 import * as firebase from 'firebase';
 
@@ -13,14 +16,51 @@ export default class ChatComponent extends Component {
 
     constructor(props) {
         super(props);
+        this.text = "";
+    }
+
+    componentWillMount() {
+        const { user, group, addMessages, resetMessages } = this.props;
+        resetMessages();
+        AsyncStorage.getItem('userData').then(udJSON => {
+            let userData = JSON.parse(udJSON);
+            let myUserId = userData.firebaseUserId;
+            let groupId = group.groupId;
+
+            getGroupMessages(groupId).then(groupMessages => {
+                for (let messageId in groupMessages) {
+                    console.log(messageId);
+                    getMessageObject(messageId, groupId).then(message => {
+                        console.log(message);
+                        message.messageId = messageId;
+                        addMessages(message);
+                    }).catch(error => alert(error));
+                }
+            });
+        });
     }
 
     _scrollToInput(reactRef) {
         this.refs.scroll.scrollToFocusedInput(ReactNative.findNodeHandle(reactRef));
     }
 
+    _sendMessage() {
+        const { sendMessage } = this.props;
+        const { user, group } = this.props;
+        let msgInfo = {
+            text: this.text,
+            senderId: user.firebaseUserId,
+            groupId: group.groupId
+        }
+        sendMessage(msgInfo);
+    }
+
+    
+
     render() {
-        const { username, avatarURL, switchScreen, loading } = this.props;
+        const { user, group, messages, avatarURL, switchScreen, loading } = this.props;
+        console.log(messages);
+
         if (loading) {
             return (
                 <View style={styles.container} >
@@ -32,53 +72,42 @@ export default class ChatComponent extends Component {
         }
 
         return (
-            <View style={styles.container}>
-                <View style={styles.topBar}>
-                    <Image
-                        style={styles.profilePicture}
-                        source={{uri: avatarURL}}
+            // this._renderMessageList(),
+
+            <View style={styles.headerContainer}>
+                <NavigationBar
+                    title={{title: group.groupName}}
+                    rightButton={{
+                        title: 'Back',
+                        handler: () => switchScreen('Home')
+                    }}
+                />
+                <TextInput
+                        onChangeText = { (text) => this.text = text }
+                        onSubmitEditing = { () => this._sendMessage() }
+                        placeholder = "Say something"
+                        style={styles.textInput}
+                />
+                <List>
+                    <FlatList
+                        data = { messages }
+                        keyExtractor = {item => item.messageId}
+                        renderItem = {({ item }) => (
+                            <ListItem
+                            roundAvatar
+                            title = {`${item.message}`}
+                            subtitle = {`${item.senderUid}`}
+                            />
+                        )}
                     />
+                </List>
 
-                    <Text style={styles.header}>Global Chat</Text>
-
-                    <Button
-                        style={styles.backButton}
-                        onPress = {() => switchScreen('Home')}
-                        title="Back"
-                        color="#841584"
-                    />
-                </View>
-
-                <KeyboardAwareScrollView
-                    style={{ backgroundColor: '#4c69a5' }}
-                    resetScrollToCoords={{ x: 0, y: 0 }}
-                    contentContainerStyle={styles.container}
-                    scrollEnabled={false}
-                >
-                    <View>
-                        <TextInput
-                            onChangeText={(text) => sendMessage(text, this.props.user)}
-                            placeholder="Email"
-                            style={styles.textInput}
-                        />
-                        <TextInput
-                            placeholder="Email"
-                            style={styles.textInput}
-                        />
-                        <TextInput
-                            placeholder="Email"
-                            style={styles.textInput}
-                        />
-                        <TextInput
-                            placeholder="Email"
-                            style={styles.textInput}
-                        />
-                        <TextInput
-                            placeholder="Email"
-                            style={styles.textInput}
-                        />
-                    </View>
-                </KeyboardAwareScrollView>
+                <TextInput
+                        onChangeText = { (text) => this.text = text }
+                        onSubmitEditing = { () => this._sendMessage() }
+                        placeholder = "Say something..."
+                        style={styles.textInput}
+                />
             </View>
         );
     }

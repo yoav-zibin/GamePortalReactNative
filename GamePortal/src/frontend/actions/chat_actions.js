@@ -2,16 +2,35 @@
 Handle actions related to chat room
  */
 
+import * as firebase from 'firebase';
+
+// Create a new group
+export function addMyGroups(group) {
+    return {
+        type: 'ADD_GROUPS',
+        group: group
+    }
+}
+
 // Start fetching messages, set isFetching flag
 export const startFetchingMessages = () => ({
     type: 'START_FETCHING_MESSAGES'
 });
 
 // Add a message
-export const addMessage = (msg) => ({
-    type: 'ADD_MESSAGE',
-    ...msg
-});
+export function addMessages(msg) {
+    return {
+        type: 'ADD_MESSAGES',
+        message: msg
+    }
+}
+
+// Reset group messages
+export function resetMessages() {
+    return {
+        type: 'RESET_MESSAGES'
+    }
+}
 
 // Get messages from firebase
 export const getMessages = (messages) => {
@@ -29,11 +48,11 @@ export const receivedAllMessages = () => ({
 });
 
 // Async actions creator to fetch messages from firebase
-export const fetchMessages = () => {
+export function fetchMessages(groupId) {
     return function (dispatch) {
         dispatch(startFetchingMessages());
 
-        firebase.database().ref('messages').orderByKey().limitToLast(20).on('value', (snapshot) => {
+        firebase.database().ref('gamePortal/groups' + groupId).child('messages').on('value', (snapshot) => {
             // gets around Redux panicking about actions in reducers
             setTimeout(() => {
                 const messages = snapshot.val() || [];
@@ -43,25 +62,31 @@ export const fetchMessages = () => {
     }
 }
 
+// Set message content
+
+export function setMessage(message) {
+    return {
+        type: 'SET_MESSAGE',
+        message: message
+    }
+}
+
 // Send a message
-export const sendMessage = (text, user) => {
+export function sendMessage(msgInfo) {
     return function (dispatch) {
         let msg = {
-                text: text,
-                time: Date.now(),
-                author: {
-                    name: user.name,
-                    avatar: user.avatar
-                }
+                message: msgInfo.text,
+                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                senderUid: msgInfo.senderId
             };
 
-        const newMsgRef = firebase.database()
-                                  .ref('/gamePortal/groups/groupId${idSuffix}/messages/messageId${idSuffix}')
-                                  .push();
-        msg.id = newMsgRef.key;
-        newMsgRef.set(msg);
+        let groupId = msgInfo.groupId;
+        console.log(msg);
+        console.log(firebase.database().ref('gamePortal/groups'));
+        messagesRef = firebase.database().ref('gamePortal/groups/' + groupId).child('messages');
+        messagesRef.push(msg);
 
-        dispatch(addMessage(msg));
+        dispatch(addMessages(msg));
     };
 };
 

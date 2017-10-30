@@ -11,6 +11,7 @@ import {
 // import { GoogleSignin } from 'react-native-google-signin';
 
 import styles from '../../styles/common_style'
+import { firebaseLoginFlow, firebaseConnect } from '../../../backend/users/login'
 
 import * as firebase from 'firebase';
 
@@ -18,54 +19,49 @@ export default class LoginDefaultComponent extends Component {
 
 
     constructor(props) {
-        super(props);
+        super();
     }
 
-    _login(success, credential_type, credential, token, message) {
+    _finishLogin(success, payload) {
+        const { setLoggedInUser, setLoggedOut, switchScreen } = this.props; //actions
 
-        const { setLoggedOut, setLoggedInUser, switchScreen } = this.props; //actions
-
-        if (!success) {
-            alert("Login failed, reason: " + message);
-            setLoggedOut();
+        if (success) {
+            setLoggedInUser(payload.displayName, payload.photoURL, payload.uid);
+            switchScreen('Home');
         } else {
-            firebase.auth().signInWithCredential(credential).then((firebaseUser) => { //Firebase accepted login
-
-                //Save login details to storage
-
-                let userData = {
-                    'credentialType': credential_type,
-                    'accessToken': token,
-                    'username': firebaseUser.displayName,
-                    'avatarURL': firebaseUser.photoURL,
-                    'firebaseUserId': firebaseUser.uid
-                };
-
-                AsyncStorage.setItem('userData', JSON.stringify(userData));
-
-                //Go to the home page
-
-                setLoggedInUser(firebaseUser.displayName, firebaseUser.photoURL, firebaseUser.uid);
-                switchScreen('Home');
-
-            }, function (err) { //Firebase rejected Facebook login
-                console.log(err);
-                alert("Login Failed, try another method");
-                setLoggedOut();
-            })
+            alert(payload);
+            setLoggedOut();
         }
+    }
 
+    _login(success, credentialType, credential, accessToken, message) {
+        if (success) {
+            let loginObject = {
+                credential: credential,
+                credentialType: credentialType,
+                accessToken: accessToken
+            };
 
+            firebaseLoginFlow(loginObject).then(firebaseUser => {
+                firebaseConnect(firebaseUser.uid);
+                this._finishLogin(true, firebaseUser);
+            });
+        } else {
+            this._finishLogin(false, message);
+        }
     }
 
     _facebookLogin() {
+
 
         const { setLoggingIn } = this.props;
         setLoggingIn();
 
         LoginManager.logInWithReadPermissions(['public_profile']).then((fbResult) => { // Facebook accepted login
             if (!fbResult.isCancelled) { // User accepted login
+
                 AccessToken.getCurrentAccessToken().then((accessToken) => {
+
                     let credential = firebase.auth.FacebookAuthProvider.credential(accessToken.accessToken);
                     this._login(true, "facebook", credential, accessToken.accessToken);
                 }).catch((err) => { // Error retrieving access token
@@ -74,7 +70,7 @@ export default class LoginDefaultComponent extends Component {
             } else { // User rejected login
                 this._login(false, "facebook", undefined, undefined, 'User rejected');
             }
-        }, function (err) { //Facebook rejected login
+        }).catch(err => {
             this._login(false, "facebook", undefined, undefined, err);
         });
     }
