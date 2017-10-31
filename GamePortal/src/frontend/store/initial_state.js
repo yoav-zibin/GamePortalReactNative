@@ -42,6 +42,6 @@ export const initialState = {
         messageId: undefined,
         message: undefined,
         timestamp: undefined,
-        senderUid: undefined
+        sender: undefined
     }
 };

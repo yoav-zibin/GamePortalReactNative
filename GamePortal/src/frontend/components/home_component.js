@@ -5,6 +5,7 @@ import {
     Button, 
     Image, 
     Text, 
+    TextInput,
     View,
     SectionList,
     FlatList,
@@ -12,6 +13,7 @@ import {
 } from 'react-native';
 
 import { List, ListItem } from 'react-native-elements';
+import NavigationBar from 'react-native-navbar';
 
 import Tabs from 'react-native-tabs';
 
@@ -26,11 +28,10 @@ export default class HomeComponent extends Component {
 
     constructor(props) {
         super(props);
+        this.localGroupName = ''
     }
 
     componentWillMount() {
-
-        console.log("Called");
 
         // actions
         const { addMyGroups, addRecentlyConnectedUser, resetRecentlyConnectedUsers } = this.props;
@@ -113,7 +114,7 @@ export default class HomeComponent extends Component {
         switchScreen('Chat');
     }
 
-    _createGroup(users) {
+    _createGroup(users, groupName) {
 
         const { createGroup, addMyGroups } = this.props;
 
@@ -122,7 +123,6 @@ export default class HomeComponent extends Component {
             let userData = JSON.parse(udJSON);
             let creatorId = userData.firebaseUserId;
             let createdOn = firebase.database.ServerValue.TIMESTAMP;
-            let groupName = 'new_group_name';
 
             let idSuffix = (Math.random().toString() + 'xxxx').substr(2);
 
@@ -162,20 +162,7 @@ export default class HomeComponent extends Component {
         });
     }
 
-    // _renderSeparator = () => {
-    //     return (
-    //       <View
-    //         style={{
-    //           height: 1,
-    //           width: "86%",
-    //           backgroundColor: "#CED0CE",
-    //           marginLeft: "14%"
-    //         }}
-    //       />
-    //     );
-    //   };
-
-    _renderChat() {
+    _renderGroups() {
         const { myGroups } = this.props;
         return (
             <List>
@@ -201,7 +188,7 @@ export default class HomeComponent extends Component {
         switch(tab) {
             case 'tabChats':
                 return (
-                    this._renderChat()
+                    this._renderGroups()
                 );
             case 'tabFriends':
                 return (
@@ -272,12 +259,20 @@ export default class HomeComponent extends Component {
                                 selectedUsers.push(user);
                             }
                         }
+
                         createGroup = (
                             // TODO: Need to add a page to initialize group info
-                            <Button
-                                onPress = {() => this._createGroup(selectedUsers)}
-                                title="Create Group"
-                            />
+                            <View>
+                                <TextInput
+                                    onChangeText = { (text) => this.localGroupName = text }
+                                    placeholder = "Create a group name"
+                                    style={styles.textInput}
+                                />
+                                <Button
+                                    onPress = {() => this._createGroup(selectedUsers, this.localGroupName)}
+                                    title="Create Group"
+                                />
+                            </View>
                         );    
                     }
 

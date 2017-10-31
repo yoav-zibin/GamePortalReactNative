@@ -3,8 +3,9 @@ import { createLogger } from 'redux-logger'
 import thunkMiddleware from 'redux-thunk'
 import { initialState } from "./initial_state";
 import { rootReducer } from '../reducers/root_reducer';
+import { fetchMessages } from '../actions/chat_actions';
 
-const loggerMiddleware = createLogger()
+const loggerMiddleware = createLogger();
 
 const store = createStore(
   rootReducer,
@@ -14,10 +15,5 @@ const store = createStore(
     // loggerMiddleware // neat middleware that logs actions
   )
 )
-
-// store.dispatch(selectSubreddit('reactjs'))
-
-// store.dispatch(fetchPosts('reactjs'))
-//      .then(() => console.log(store.getState()))
 
 export default store

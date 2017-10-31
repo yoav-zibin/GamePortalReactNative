@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { switchScreen, setLoading } from "../actions/screen_actions";
 import { setLoggedOut } from "../actions/user_actions";
-import { sendMessage, addMessages, resetMessages } from '../actions/chat_actions';
+import { sendMessage, fetchMessages, addMessages, resetMessages } from '../actions/chat_actions';
 
 import ChatComponent from '../components/chat_component';
 
@@ -19,6 +19,7 @@ const mapDispatchToProps = dispatch => ({
     setLoggedOut: () => dispatch(setLoggedOut()),
     sendMessage: (messageInfo) => dispatch(sendMessage(messageInfo)),
     addMessages: (message) => dispatch(addMessages(message)),
+    fetchMessages: (groupId) => dispatch(fetchMessages(groupId)),
     resetMessages: () => dispatch(resetMessages()),
     switchScreen: screen => dispatch(switchScreen(screen))
 });

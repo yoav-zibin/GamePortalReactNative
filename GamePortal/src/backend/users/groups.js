@@ -25,30 +25,27 @@ function getGroupObject(firebaseGroupId) {
 function getGroupMessages(firebaseGroupId) {
     return new Promise((resolve, reject) => {
         firebase.database().ref('gamePortal/groups/' + firebaseGroupId)
-                           .child('messages').once('value')
-                           .then(value => {
-            let pfJSON = JSON.stringify(value);
-            let messages = JSON.parse(pfJSON);
-            console.log(messages);
-            resolve(messages);
-        }).catch(error => reject(error));
+                           .child('messages')
+                           .on('value', (snapshot) => {
+                               console.log('get new message');
+
+                            setTimeout(() => {
+                                const messages = snapshot.val() || [];
+                                console.log(messages);
+                                resolve(messages);
+                            }, 0);
+                        });
     });
 }
 
 function getMessageObject(messageId, groupId) {
 
-    console.log(messageId);
-    console.log(groupId);
-
     return new Promise((resolve, reject) => {
         firebase.database().ref('gamePortal/groups/' + groupId + '/messages/' + messageId)
                            .once('value')
                            .then(value => {
-            console.log(value);
             let pfJSON = JSON.stringify(value);
-            console.log(pfJSON);
             let message = JSON.parse(pfJSON);
-            console.log(message);
             resolve(message);
         }).catch(error => reject(error));
     });

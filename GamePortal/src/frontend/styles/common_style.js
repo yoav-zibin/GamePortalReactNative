@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F5FCFF',
+        backgroundColor: 'white',
     },
 
     headerContainer: {
@@ -53,9 +53,16 @@ const styles = StyleSheet.create({
     },
 
     profilePicture: {
-        marginLeft: 10,
         width: 50,
         height: 50,
+        borderRadius: 10,
+        marginHorizontal: 15
+    },
+
+    signOutButton: {
+        position: 'absolute',
+        top: 60,
+        right: 15
     },
 
     header: {

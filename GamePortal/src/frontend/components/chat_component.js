@@ -5,7 +5,6 @@ import ReactNative from 'react-native';
 import { List, ListItem } from 'react-native-elements';
 import NavigationBar from 'react-native-navbar';
 import { AsyncStorage, Button, Image, Text, View, TextInput, FlatList } from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { getGroupMessages, getMessageObject } from '../../backend/users/groups';
 
 import * as firebase from 'firebase';
@@ -20,7 +19,7 @@ export default class ChatComponent extends Component {
     }
 
     componentWillMount() {
-        const { user, group, addMessages, resetMessages } = this.props;
+        const { user, group, fetchMessages, addMessages, resetMessages } = this.props;
         resetMessages();
         AsyncStorage.getItem('userData').then(udJSON => {
             let userData = JSON.parse(udJSON);
@@ -29,19 +28,13 @@ export default class ChatComponent extends Component {
 
             getGroupMessages(groupId).then(groupMessages => {
                 for (let messageId in groupMessages) {
-                    console.log(messageId);
                     getMessageObject(messageId, groupId).then(message => {
-                        console.log(message);
                         message.messageId = messageId;
                         addMessages(message);
                     }).catch(error => alert(error));
                 }
             });
         });
-    }
-
-    _scrollToInput(reactRef) {
-        this.refs.scroll.scrollToFocusedInput(ReactNative.findNodeHandle(reactRef));
     }
 
     _sendMessage() {
@@ -55,11 +48,8 @@ export default class ChatComponent extends Component {
         sendMessage(msgInfo);
     }
 
-    
-
     render() {
         const { user, group, messages, avatarURL, switchScreen, loading } = this.props;
-        console.log(messages);
 
         if (loading) {
             return (
@@ -72,7 +62,6 @@ export default class ChatComponent extends Component {
         }
 
         return (
-            // this._renderMessageList(),
 
             <View style={styles.headerContainer}>
                 <NavigationBar
@@ -85,7 +74,7 @@ export default class ChatComponent extends Component {
                 <TextInput
                         onChangeText = { (text) => this.text = text }
                         onSubmitEditing = { () => this._sendMessage() }
-                        placeholder = "Say something"
+                        placeholder = "Say something..."
                         style={styles.textInput}
                 />
                 <List>
@@ -101,13 +90,6 @@ export default class ChatComponent extends Component {
                         )}
                     />
                 </List>
-
-                <TextInput
-                        onChangeText = { (text) => this.text = text }
-                        onSubmitEditing = { () => this._sendMessage() }
-                        placeholder = "Say something..."
-                        style={styles.textInput}
-                />
             </View>
         );
     }
