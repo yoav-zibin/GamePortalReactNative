@@ -1,15 +1,14 @@
 import React, {Component} from 'react';
 
 import {
-    AsyncStorage, 
-    Button, 
-    Image, 
-    Text, 
+    AsyncStorage,
+    Button,
+    Image,
+    Text,
     TextInput,
     View,
     SectionList,
-    FlatList,
-    Header
+    FlatList, ScrollView
 } from 'react-native';
 
 import { List, ListItem } from 'react-native-elements';
@@ -83,14 +82,6 @@ export default class HomeComponent extends Component {
         });
     }
 
-    // _retrieveMyData() {
-    //     let data;
-    //     AsyncStorage.getItem('userData').then(udJSON => {
-    //         data = JSON.parse(udJSON);
-    //     });
-    //     return data;
-    // }
-
     _signOut() {
 
         const { setLoading, setLoggedOut, switchScreen } = this.props; //actions
@@ -124,11 +115,9 @@ export default class HomeComponent extends Component {
             let creatorId = userData.firebaseUserId;
             let createdOn = firebase.database.ServerValue.TIMESTAMP;
 
-            let idSuffix = (Math.random().toString() + 'xxxx').substr(2);
-
             let groupsRef = firebase.database().ref('gamePortal/groups/');
 
-            let participants = {}
+            let participants = {};
             participants[creatorId] = {participantIndex: 0};
             for (let p = 0; p < users.length; p++) {
                 let participant = users[p];
@@ -141,9 +130,9 @@ export default class HomeComponent extends Component {
                 createdOn: createdOn,
                 messages: '',
                 matches: ''
-            }
+            };
 
-            groupId = groupsRef.push(group).key;
+            let groupId = groupsRef.push(group).key;
 
             firebase.database().ref('users/' + creatorId + '/privateButAddable/groups/' + groupId).set({
                 addedByUid: creatorId,
@@ -182,8 +171,34 @@ export default class HomeComponent extends Component {
         );
     }
 
+    renderActiveUsers() {
+        const { recentlyConnectedUsers, switchSelectUser } = this.props;
+
+        return (
+            <ScrollView>
+                <List>
+                    {
+                        recentlyConnectedUsers.map((rcu, index) => (
+                            <ListItem
+                                roundAvatar
+                                avatar={{uri:rcu.avatarURL}}
+                                key={index}
+                                title={rcu.displayName}
+                                hideChevron={true}
+                                switchButton={true}
+                                switchOnTintColor="#62B36C"
+                                switched={rcu.selected}
+                                onSwitch={() => switchSelectUser(rcu.userId)}
+                            />
+                        ))
+                    }
+                </List>
+            </ScrollView>
+        );
+    }
+
     _renderTab() {
-        const { tab, recentlyConnectedUsers, switchSelectUser } = this.props;
+        const { tab, recentlyConnectedUsers } = this.props;
 
         switch(tab) {
             case 'tabChats':
@@ -197,103 +212,38 @@ export default class HomeComponent extends Component {
                   </View>
                 );
             case 'tabActive':
-                let users = [];
-                if (recentlyConnectedUsers !== null && recentlyConnectedUsers.length > 0) {
 
-                    let oneSelected = false;
-                    let selectedUsers = [];
-
-                    // List all the active users
-                    for (let u = 0; u < recentlyConnectedUsers.length; u++) {
-                        let user = recentlyConnectedUsers[u];
-
-                        let selectedButton = undefined;
-
-                        if (user.selected) {
-                            oneSelected = true;
-                            selectedButton = (
-                                <Button
-                                    onPress = {() => switchSelectUser(user.userId)}
-                                    title="Deselect"
-                                    color="#FBB5B0"
-                                />
-                            );
-                        } else {
-                            selectedButton = (
-                                <Button
-                                    onPress = {() => switchSelectUser(user.userId)}
-                                    title="Select"
-                                    color="#62B36C"
-                                />
-                            );
-                        }
-
-                        let userElement = (
-                            <View key={u} style={styles.listItemView}>
-                                <Image
-                                    style={styles.profilePicture}
-                                    source={{uri: user.avatarURL}}
-                                />
-                                <Text>{user.displayName}</Text>
-
-                                <Button
-                                    onPress = {() => alert("Profile")}
-                                    title="Profile"
-                                    color="#B4B105"
-                                />
-
-                                {selectedButton}
-                            </View>
-                        );
-
-                        users.push(userElement);
+                let selectedUsers = [];
+                for (let i = 0; i < recentlyConnectedUsers.length; i++) {
+                    if (recentlyConnectedUsers[i].selected) {
+                        selectedUsers.push(recentlyConnectedUsers[i]);
                     }
-
-                    let createGroup = undefined;
-
-                    if (oneSelected) {
-                        // Create a new group with selected users
-                        for (let u = 0; u < recentlyConnectedUsers.length; u++) {
-                            let user = recentlyConnectedUsers[u];
-                            if (user.selected) {
-                                selectedUsers.push(user);
-                            }
-                        }
-
-                        createGroup = (
-                            // TODO: Need to add a page to initialize group info
-                            <View>
-                                <TextInput
-                                    onChangeText = { (text) => this.localGroupName = text }
-                                    placeholder = "Create a group name"
-                                    style={styles.textInput}
-                                />
-                                <Button
-                                    onPress = {() => this._createGroup(selectedUsers, this.localGroupName)}
-                                    title="Create Group"
-                                />
-                            </View>
-                        );    
-                    }
-
-                    return (
-                      <View style={styles.container}>
-                          {createGroup}
-                          <Text>{'\n\n'}</Text>
-                          {users}
-                      </View>
-                    );
-
-                } else {
-                    return (
-                        <View style={styles.container}>
-                            <Text>No Recently Connected Users</Text>
-                        </View>
-                    )
                 }
 
-                break;
+                let createGroupView = (
+                    <View>
+                        <TextInput
+                            onChangeText = { (text) => this.localGroupName = text }
+                            placeholder = "Create a group name"
+                            style={styles.textInput}
+                        />
 
+                        <Button
+                                onPress = {() => this._createGroup(selectedUsers, this.localGroupName)}
+                                disabled={selectedUsers.length === 0}
+                                title="Create Group"
+                        />
+                    </View>
+                );
+
+                let activeUsers = this.renderActiveUsers();
+
+                return (
+                    <View>
+                        {createGroupView}
+                        {activeUsers}
+                    </View>
+                );
             default:
                 return (
                   <View>
