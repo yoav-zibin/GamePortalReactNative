@@ -24,6 +24,14 @@ const styles = StyleSheet.create({
         width: width
     },
 
+    viewContainer: {
+        flex: 0.9
+    },
+
+    createGroupButton: {
+        flex: 0.1
+    },
+
     tabButton: {
         backgroundColor: 'white'
     },
