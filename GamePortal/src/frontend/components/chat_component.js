@@ -19,22 +19,20 @@ export default class ChatComponent extends Component {
     }
 
     componentWillMount() {
-        const { user, group, fetchMessages, addMessages, resetMessages } = this.props;
+        const { user, group, addMessages, resetMessages } = this.props;
+        let groupId = group.groupId;
         resetMessages();
-        AsyncStorage.getItem('userData').then(udJSON => {
-            let userData = JSON.parse(udJSON);
-            let myUserId = userData.firebaseUserId;
-            let groupId = group.groupId;
-
-            getGroupMessages(groupId).then(groupMessages => {
-                for (let messageId in groupMessages) {
-                    getMessageObject(messageId, groupId).then(message => {
-                        message.messageId = messageId;
-                        addMessages(message);
-                    }).catch(error => alert(error));
-                }
-            });
-        });
+        firebase.database().ref('gamePortal/groups/' + groupId)
+                           .child('messages')
+                           .on('value', (snapshot) => {
+                               setTimeout(() => {
+                                   const messages = snapshot.val() || [];
+                                   for (let m in messages) {
+                                       console.log(messages[m]);
+                                       addMessages(messages[m]);
+                                   }
+                                }, 0);
+                            });
     }
 
     _sendMessage() {
@@ -50,6 +48,7 @@ export default class ChatComponent extends Component {
 
     render() {
         const { user, group, messages, avatarURL, switchScreen, loading } = this.props;
+        console.log(messages);
 
         if (loading) {
             return (

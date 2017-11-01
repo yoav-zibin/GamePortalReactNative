@@ -34,8 +34,9 @@ export default class HomeComponent extends Component {
     componentWillMount() {
 
         // actions
-        const { addMyGroups, addRecentlyConnectedUser, resetRecentlyConnectedUsers } = this.props;
+        const { addMyGroups, resetMyGroups, addRecentlyConnectedUser, resetRecentlyConnectedUsers } = this.props;
         resetRecentlyConnectedUsers();
+        resetMyGroups();
 
         AsyncStorage.getItem('userData').then(udJSON => {
             let userData = JSON.parse(udJSON);
@@ -72,7 +73,6 @@ export default class HomeComponent extends Component {
             getMyGroups(myUserId).then(myGroupList => {
 
                 for (let groupId in myGroupList) {
-
                     getGroupObject(groupId).then(group => {
                         group.groupId = groupId;
                         addMyGroups(group);

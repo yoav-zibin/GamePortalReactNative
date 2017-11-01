@@ -7,9 +7,3 @@ export function loadCurrentGroup(group) {
         group: group
     }
 }
-
-// export function addMyCreatedGroups(group) {
-//     return {
-//         type: 'ADD_CREATED_GROUPS'
-//     }
-// }

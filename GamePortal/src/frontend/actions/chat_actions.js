@@ -17,6 +17,13 @@ export const startFetchingMessages = () => ({
     type: 'START_FETCHING_MESSAGES'
 });
 
+// Reset my groups
+export function resetMyGroups() {
+    return {
+        type: 'RESET_MY_GROUPS',
+    }
+}
+
 // Add a message
 export function addMessages(msg) {
     return {

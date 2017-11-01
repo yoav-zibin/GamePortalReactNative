@@ -3,7 +3,7 @@ import { switchScreen, setLoading } from "../actions/screen_actions";
 import { setLoggedOut } from "../actions/user_actions";
 import { switchTab } from "../actions/home_actions";
 import { addRecentlyConnectedUser, resetRecentlyConnectedUsers, switchSelectUser } from "../actions/recently_connected_actions";
-import { addMyGroups } from '../actions/chat_actions';
+import { addMyGroups, resetMyGroups } from '../actions/chat_actions';
 import { loadCurrentGroup } from '../actions/group_actions';
 
 import HomeComponent from '../components/home_component'
@@ -25,6 +25,7 @@ const mapDispatchToProps = dispatch => ({
     setLoggedOut: () => dispatch(setLoggedOut()),
     addRecentlyConnectedUser: user => dispatch(addRecentlyConnectedUser(user)),
     resetRecentlyConnectedUsers: () => dispatch(resetRecentlyConnectedUsers()),
+    resetMyGroups: () => dispatch(resetMyGroups()),
     switchSelectUser: userId => dispatch(switchSelectUser(userId)),
     loadCurrentGroup: group => dispatch(loadCurrentGroup(group)),
     addMyGroups: group => dispatch(addMyGroups(group))

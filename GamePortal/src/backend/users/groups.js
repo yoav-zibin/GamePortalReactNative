@@ -27,11 +27,8 @@ function getGroupMessages(firebaseGroupId) {
         firebase.database().ref('gamePortal/groups/' + firebaseGroupId)
                            .child('messages')
                            .on('value', (snapshot) => {
-                               console.log('get new message');
-
                             setTimeout(() => {
                                 const messages = snapshot.val() || [];
-                                console.log(messages);
                                 resolve(messages);
                             }, 0);
                         });

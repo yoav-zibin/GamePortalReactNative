@@ -6,6 +6,10 @@ export const chatRoomReducer = (state = initialState.chatRoom, action) => {
             return Object.assign({}, state, {
                 messages: []
             });
+        case 'RESET_MESSAGES':
+            return Object.assign({}, state, {
+                myGroups: []
+            });
         case 'ADD_GROUPS':
             let newList = Object.assign([], state.myGroups);
             for (let i = 0; i < state.myGroups.length; i++) {
@@ -19,12 +23,15 @@ export const chatRoomReducer = (state = initialState.chatRoom, action) => {
             });
         case 'ADD_MESSAGES':
             let newMessageList = Object.assign([], state.messages)
+            console.log(newMessageList);
             for (let i = 0; i <  state.messages.length; i++) {
-                if (action.message.messageId === state.messages[i].messageId) {
+                console.log(action.message);
+                if (action.message === state.messages[i]) {
                     return state;
                 }
             }
             newMessageList.push(action.message);
+            console.log(newMessageList);
             return Object.assign({}, state, {
                 messages: newMessageList
             })
