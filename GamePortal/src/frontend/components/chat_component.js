@@ -1,11 +1,7 @@
 import React, {Component} from 'react';
-
-import ReactNative from 'react-native';
-
-import { List, ListItem } from 'react-native-elements';
+import {List, ListItem} from 'react-native-elements';
 import NavigationBar from 'react-native-navbar';
-import { AsyncStorage, Button, Image, Text, View, TextInput, FlatList, ScrollView } from 'react-native';
-import { getGroupMessages, getMessageObject } from '../../backend/users/groups';
+import {Text, View, TextInput, ScrollView} from 'react-native';
 
 import * as firebase from 'firebase';
 
@@ -15,44 +11,47 @@ export default class ChatComponent extends Component {
 
     constructor(props) {
         super(props);
-        this.text = "";
     }
 
     componentWillMount() {
-        const { user, group, addMessages, resetMessages } = this.props;
-        let groupId = group.groupId;
+        const {groupId, addMessage, resetMessages} = this.props;
         resetMessages();
         firebase.database().ref('gamePortal/groups/' + groupId)
-                           .child('messages')
-                           .on('value', (snapshot) => {
-                               setTimeout(() => {
-                                   const messages = snapshot.val() || [];
-                                   console.log(messages);
-                                   for (let messageId in messages) {
-                                        addMessages(messages[messageId]);
-                                   }
-                                }, 0);
-                            });
+            .child('messages')
+            .on('value', (snapshot) => {
+                setTimeout(() => {
+                    resetMessages();
+                    const messages = snapshot.val() || [];
+                    for (let messageId in messages) {
+                        if (messages.hasOwnProperty(messageId)) {
+                            addMessage(messages[messageId]);
+                        }
+                    }
+                }, 0);
+            });
     }
 
-    _sendMessage() {
-        const { sendMessage } = this.props;
-        const { user, group } = this.props;
-        let msgInfo = {
-            text: this.text,
-            senderId: user.firebaseUserId,
-            groupId: group.groupId
-        }
-        sendMessage(msgInfo);
+    _sendMessage(messageText) {
+        const {addMessage} = this.props;
+        const {user, groupId} = this.props;
+
+        let message = {
+            message: messageText,
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            senderUid: user.firebaseUserId
+        };
+
+        this.textInput.clear();
+        firebase.database().ref('gamePortal/groups/' + groupId + '/messages').push(message);
+        addMessage(message);
     }
 
     render() {
-        const { user, group, messages, avatarURL, switchScreen, loading } = this.props;
-        console.log(messages);
+        const {user, groupName, messages, avatarURL, switchScreen, loading} = this.props;
 
         if (loading) {
             return (
-                <View style={styles.container} >
+                <View style={styles.container}>
                     <Text style={styles.header}>
                         Loading chat information
                     </Text>
@@ -60,37 +59,47 @@ export default class ChatComponent extends Component {
             );
         }
 
-        return (
+        let newMessage = "";
 
-            <View style={styles.headerContainer}>
-                <NavigationBar
-                    title={{title: group.groupName}}
-                    rightButton={{
-                        title: 'Back',
-                        handler: () => switchScreen('Home')
-                    }}
-                />
-                <TextInput
-                        onChangeText = { (text) => this.text = text }
-                        onSubmitEditing = { () => this._sendMessage() }
-                        placeholder = "Say something..."
-                        style={styles.textInput}
-                />
-                <ScrollView>
-                    <List>
+        return (
+            <View style={styles.container}>
+                <View style={styles.headerContainer}>
+                    <NavigationBar
+                        title={{title: groupName}}
+                        rightButton={{
+                            title: 'Back',
+                            handler: () => switchScreen('Home')
+                        }}
+                    />
+                </View>
+
+                <ScrollView styles={styles.chatRoom}>
+                    <List style={styles.chatMessages}>
                         {
                             messages.map((message, index) => (
                                 <ListItem
                                     roundAvatar
+                                    avatar={{uri: message.avatarURL}}
                                     key={index}
                                     title={message.message}
-                                    subtitle={message.sendeUid}
+                                    subtitle={message.timestamp instanceof Object ? "SENDING" : message.timestamp}
+                                    hideChevron={true}
                                 />
                             ))
                         }
                     </List>
                 </ScrollView>
+
+                <TextInput
+                    ref={input => { this.textInput = input }}
+                    onChangeText={text => newMessage = text}
+                    onSubmitEditing={() => this._sendMessage(newMessage)}
+                    placeholder="Say something..."
+                    style={styles.textInput}
+                />
+
             </View>
+
         );
     }
 }

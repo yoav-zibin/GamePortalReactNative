@@ -13,7 +13,7 @@ export const rootReducer = combineReducers({
     screen: screenReducer,
     home: homeReducer,
     recentlyConnected: recentlyConnectedReducer,
-    chatRoom: chatRoomReducer,
-    group: groupReducer,
-    message: messageReducer
+    groups: groupReducer,
+    messages: messageReducer,
+    chatRoom: chatRoomReducer
 });

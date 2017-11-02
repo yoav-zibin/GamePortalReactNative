@@ -2,13 +2,21 @@ import { initialState } from '../store/initial_state';
 
 export const chatRoomReducer = (state = initialState.chatRoom, action) => {
     switch (action.type) {
+        case 'SWITCH_ROOM':
+            return Object.assign({}, state, {
+                groupId: action.groupId,
+                groupName: action.groupName
+            });
+        default:
+            return state;
+    }
+};
+
+export const chatRoomReducerOld = (state = initialState.chatRoom, action) => {
+    switch (action.type) {
         case 'RESET_MESSAGES':
             return Object.assign({}, state, {
                 messages: []
-            });
-        case 'RESET_MESSAGES':
-            return Object.assign({}, state, {
-                myGroups: []
             });
         case 'ADD_GROUPS':
             let newList = Object.assign([], state.myGroups);

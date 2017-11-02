@@ -68,6 +68,9 @@ export default class GamePortalReactNative extends Component {
                 case 'Home':
                     newScreen = 'Splash';
                     break;
+                case 'Chat':
+                    newScreen = 'Home';
+                    break;
                 case 'Splash':
                     return false;
             }
