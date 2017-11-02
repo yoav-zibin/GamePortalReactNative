@@ -1,9 +1,16 @@
 /*
 Group related actions
  */
-export function loadCurrentGroup(group) {
+
+export function addGroup(group) {
     return {
-        type: 'LOAD_CURRENT_GROUP',
+        type: 'ADD_GROUP',
         group: group
+    }
+}
+
+export function resetGroups() {
+    return {
+        type: 'RESET_GROUPS'
     }
 }

@@ -1,6 +1,6 @@
 import * as firebase from 'firebase';
 
-function getMyGroups(userId) {
+function getGroups(userId) {
     return new Promise((resolve, reject) => {
         firebase.database().ref('users/' + userId + '/privateButAddable/groups').once('value').then(value => {
             let pfJSON = JSON.stringify(value);
@@ -11,7 +11,7 @@ function getMyGroups(userId) {
     });
 }
 
-function getGroupObject(firebaseGroupId) {
+function getGroup(firebaseGroupId) {
 
     return new Promise((resolve, reject) => {
         firebase.database().ref('gamePortal/groups/' + firebaseGroupId).once('value').then(value => {
@@ -48,4 +48,4 @@ function getMessageObject(messageId, groupId) {
     });
 }
 
-export { getMyGroups, getGroupObject, getGroupMessages, getMessageObject };
+export { getGroups, getGroup, getGroupMessages, getMessageObject };

@@ -7,12 +7,10 @@ import {
     Text,
     TextInput,
     View,
-    SectionList,
-    FlatList, ScrollView
+    ScrollView
 } from 'react-native';
 
 import { List, ListItem } from 'react-native-elements';
-import NavigationBar from 'react-native-navbar';
 
 import Tabs from 'react-native-tabs';
 
@@ -21,7 +19,7 @@ import * as firebase from 'firebase';
 import styles from '../styles/common_style'
 import { getRecentlyConnected } from "../../backend/users/recently_connected";
 import { getPublicFields } from "../../backend/users/public_fields";
-import { getMyGroups, getGroupObject } from '../../backend/users/groups';
+import { getGroups, getGroup } from '../../backend/users/groups';
 
 export default class HomeComponent extends Component {
 
@@ -33,9 +31,9 @@ export default class HomeComponent extends Component {
     componentWillMount() {
 
         // actions
-        const { addMyGroups, resetMyGroups, addRecentlyConnectedUser, resetRecentlyConnectedUsers } = this.props;
+        const { addGroup, resetGroups, addRecentlyConnectedUser, resetRecentlyConnectedUsers } = this.props;
         resetRecentlyConnectedUsers();
-        resetMyGroups();
+        resetGroups();
 
         AsyncStorage.getItem('userData').then(udJSON => {
             let userData = JSON.parse(udJSON);
@@ -69,13 +67,20 @@ export default class HomeComponent extends Component {
                 }
             }).catch(error => alert(error));
 
-            getMyGroups(myUserId).then(myGroupList => {
+            getGroups(myUserId).then(myGroupList => {
 
                 for (let groupId in myGroupList) {
-                    getGroupObject(groupId).then(group => {
-                        group.groupId = groupId;
-                        addMyGroups(group);
-                    }).catch(error => alert(error));
+
+                    if (myGroupList.hasOwnProperty(groupId)) {
+                        getGroup(groupId).then(response => {
+                            let group = {};
+
+                            group.groupId = groupId;
+                            group.groupName = response.groupName;
+
+                            addGroup(group);
+                        }).catch(error => console.log(error));
+                    }
                 }
 
             }).catch(error => alert(error));
@@ -99,15 +104,15 @@ export default class HomeComponent extends Component {
     }
 
     _goChatting(group) {
-        const { switchScreen, loadCurrentGroup } = this.props;
+        const { switchChatRoom, switchScreen } = this.props;
         // Update current group
-        loadCurrentGroup(group);
+        switchChatRoom(group);
         switchScreen('Chat');
     }
 
     _createGroup(users, groupName) {
 
-        const { createGroup, addMyGroups } = this.props;
+        const { addGroup } = this.props;
 
         AsyncStorage.getItem('userData').then(udJSON => {
 
@@ -147,22 +152,27 @@ export default class HomeComponent extends Component {
                 });
             }
 
-            addMyGroups(group);
+
+            group['groupId'] = groupId;
+            addGroup(group);
+            this._goChatting(group);
         });
     }
 
     renderGroups() {
-        const { myGroups } = this.props;
+        const { groups } = this.props;
+
         return (
             <ScrollView>
                 <List>
                     {
-                        myGroups.map((group, index) => (
+                        groups.map((group, index) => (
                             <ListItem
                                 roundAvatar
                                 key={index}
                                 title={group.groupName}
                                 onPress={() => this._goChatting(group)}
+                                hideChevron={true}
                             />
                         ))
                     }

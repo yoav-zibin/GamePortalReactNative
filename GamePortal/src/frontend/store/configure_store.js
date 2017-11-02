@@ -3,7 +3,7 @@ import { createLogger } from 'redux-logger'
 import thunkMiddleware from 'redux-thunk'
 import { initialState } from "./initial_state";
 import { rootReducer } from '../reducers/root_reducer';
-import { fetchMessages } from '../actions/chat_actions';
+import { fetchMessages } from '../actions/chat_room_actions';
 
 const loggerMiddleware = createLogger();
 

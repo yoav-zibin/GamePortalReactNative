@@ -14,7 +14,8 @@ const styles = StyleSheet.create({
     },
 
     headerContainer: {
-        flex: 1,
+        flex: 0.1,
+        width: width
     },
 
     tabbedContainer: {
@@ -84,6 +85,16 @@ const styles = StyleSheet.create({
         fontSize: 30
     },
 
+    chatRoom: {
+        width: width,
+        flex: 0.7
+    },
+
+    chatMessages: {
+        width: width,
+        flex: 0.1
+    },
+
     welcome: {
         fontSize: 20,
         textAlign: 'center',
@@ -107,7 +118,7 @@ const styles = StyleSheet.create({
 
     textInput: {
         width: width,
-        borderWidth: 1
+        borderWidth: 1,
     }
 });
 

@@ -4,11 +4,11 @@ Handle actions related to chat room
 
 import * as firebase from 'firebase';
 
-// Create a new group
-export function addMyGroups(group) {
+export function switchChatRoom(group) {
     return {
-        type: 'ADD_GROUPS',
-        group: group
+        type: 'SWITCH_ROOM',
+        groupId: group.groupId,
+        groupName: group.groupName
     }
 }
 
@@ -17,18 +17,12 @@ export const startFetchingMessages = () => ({
     type: 'START_FETCHING_MESSAGES'
 });
 
-// Reset my groups
-export function resetMyGroups() {
-    return {
-        type: 'RESET_MY_GROUPS',
-    }
-}
 
 // Add a message
-export function addMessages(msg) {
+export function addMessage(message) {
     return {
-        type: 'ADD_MESSAGES',
-        message: msg
+        type: 'ADD_MESSAGE',
+        message: message
     }
 }
 
@@ -46,7 +40,7 @@ export const getMessages = (messages) => {
 
         dispatch(receivedMessages());
     }
-}
+};
 
 // Receive all messages
 export const receivedAllMessages = () => ({
@@ -70,32 +64,24 @@ export function fetchMessages(groupId) {
     }
 }
 
-// Set message content
-
-export function setMessage(message) {
-    return {
-        type: 'SET_MESSAGE',
-        message: message
-    }
-}
-
 // Send a message
-export function sendMessage(msgInfo) {
+export function sendMessage(messageInformation) {
+
     return function (dispatch) {
-        let msg = {
-                message: msgInfo.text,
+        let message = {
+                message: messageInformation.value,
                 timestamp: firebase.database.ServerValue.TIMESTAMP,
-                senderUid: msgInfo.senderId
+                senderUid: messageInformation.senderId
             };
 
-        let groupId = msgInfo.groupId;
+        let groupId = messageInformation.groupId;
 
-        messagesRef = firebase.database().ref('gamePortal/groups/' + groupId).child('messages');
-        messagesRef.push(msg);
+        let messagesRef = firebase.database().ref('gamePortal/groups/' + groupId).child('messages');
+        messagesRef.push(message);
 
-        dispatch(addMessages(msg));
+        dispatch(addMessage(message));
     };
-};
+}
 
 
 
