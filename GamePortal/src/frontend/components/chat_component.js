@@ -4,7 +4,7 @@ import ReactNative from 'react-native';
 
 import { List, ListItem } from 'react-native-elements';
 import NavigationBar from 'react-native-navbar';
-import { AsyncStorage, Button, Image, Text, View, TextInput, FlatList } from 'react-native';
+import { AsyncStorage, Button, Image, Text, View, TextInput, FlatList, ScrollView } from 'react-native';
 import { getGroupMessages, getMessageObject } from '../../backend/users/groups';
 
 import * as firebase from 'firebase';
@@ -27,9 +27,9 @@ export default class ChatComponent extends Component {
                            .on('value', (snapshot) => {
                                setTimeout(() => {
                                    const messages = snapshot.val() || [];
-                                   for (let m in messages) {
-                                       console.log(messages[m]);
-                                       addMessages(messages[m]);
+                                   console.log(messages);
+                                   for (let messageId in messages) {
+                                        addMessages(messages[messageId]);
                                    }
                                 }, 0);
                             });
@@ -76,19 +76,20 @@ export default class ChatComponent extends Component {
                         placeholder = "Say something..."
                         style={styles.textInput}
                 />
-                <List>
-                    <FlatList
-                        data = { messages }
-                        keyExtractor = {item => item.messageId}
-                        renderItem = {({ item }) => (
-                            <ListItem
-                            roundAvatar
-                            title = {`${item.message}`}
-                            subtitle = {`${item.senderUid}`}
-                            />
-                        )}
-                    />
-                </List>
+                <ScrollView>
+                    <List>
+                        {
+                            messages.map((message, index) => (
+                                <ListItem
+                                    roundAvatar
+                                    key={index}
+                                    title={message.message}
+                                    subtitle={message.sendeUid}
+                                />
+                            ))
+                        }
+                    </List>
+                </ScrollView>
             </View>
         );
     }

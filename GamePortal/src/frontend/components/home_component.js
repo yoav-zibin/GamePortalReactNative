@@ -151,23 +151,23 @@ export default class HomeComponent extends Component {
         });
     }
 
-    _renderGroups() {
+    renderGroups() {
         const { myGroups } = this.props;
         return (
-            <List>
-                <FlatList
-                    data = { myGroups }
-                    keyExtractor = {item => item.groupId}
-                    renderItem = {({ item }) => (
-                        <ListItem
-                        roundAvatar
-                        title = {`${item.groupName}`}
-                        subtitle = {`${item.createdOn}`}
-                        onPress = {() => this._goChatting(item)}
-                        />
-                    )}
-                />
-            </List>
+            <ScrollView>
+                <List>
+                    {
+                        myGroups.map((group, index) => (
+                            <ListItem
+                                roundAvatar
+                                key={index}
+                                title={group.groupName}
+                                onPress={() => this._goChatting(group)}
+                            />
+                        ))
+                    }
+                </List>
+            </ScrollView>
         );
     }
 
@@ -202,14 +202,17 @@ export default class HomeComponent extends Component {
 
         switch(tab) {
             case 'tabChats':
+            let myGroups = this.renderGroups();
                 return (
-                    this._renderGroups()
+                    <View>
+                        {myGroups}
+                    </View>
                 );
             case 'tabFriends':
                 return (
-                  <View>
-                      <Text>Friends</Text>
-                  </View>
+                    <View>
+                        <Text>Friends</Text>
+                    </View>
                 );
             case 'tabActive':
 

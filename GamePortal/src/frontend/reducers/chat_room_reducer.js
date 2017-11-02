@@ -23,15 +23,12 @@ export const chatRoomReducer = (state = initialState.chatRoom, action) => {
             });
         case 'ADD_MESSAGES':
             let newMessageList = Object.assign([], state.messages)
-            console.log(newMessageList);
             for (let i = 0; i <  state.messages.length; i++) {
-                console.log(action.message);
                 if (action.message === state.messages[i]) {
                     return state;
                 }
             }
             newMessageList.push(action.message);
-            console.log(newMessageList);
             return Object.assign({}, state, {
                 messages: newMessageList
             })
