@@ -7,19 +7,32 @@ export const recentlyConnectedReducer = (state = initialState.recentlyConnected,
                users: []
             });
         case 'ADD_USER':
-            for (let i = 0; i < state.users.length; i++) {
-                if (action.user.userId === state.users[i]) {
-                    return state;
-                }
-            }
-
             let newList = Object.assign([], state.users);
 
-            while (newList.length >= 20) {
-                newList.pop();
-            }
+            if (newList.length === 0) {
+                newList.unshift(action.user)
+            } else {
+                for (let i = 0; i < newList.length; i++) {
+                    if (action.user.userId === state.users[i].userId) {
+                        if (action.user.timestamp === state.users[i].timestamp) {
+                            return state;
+                        } else {
+                            newList.splice(i, 1);
+                        }
+                    }
+                }
 
-            newList.unshift(action.user);
+                while (newList.length >= 20) {
+                    newList.pop();
+                }
+
+                for (let i = 0; i < state.users.length; i++) {
+                    if (action.user.timestamp > state.users[i].timestamp) {
+                        newList.splice(i, 0, action.user);
+                        break;
+                    }
+                }
+            }
 
             return Object.assign({}, state, {
                 users: newList

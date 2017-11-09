@@ -10,16 +10,15 @@ import {
     ScrollView
 } from 'react-native';
 
-import { List, ListItem } from 'react-native-elements';
+import {List, ListItem} from 'react-native-elements';
 
 import Tabs from 'react-native-tabs';
 
 import * as firebase from 'firebase';
 
 import styles from '../styles/common_style'
-import { getRecentlyConnected } from "../../backend/users/recently_connected";
-import { getPublicFields } from "../../backend/users/public_fields";
-import { getGroups, getGroup } from '../../backend/users/groups';
+import {getPublicFields} from "../../backend/users/public_fields";
+import {getGroup} from '../../backend/users/groups';
 
 export default class HomeComponent extends Component {
 
@@ -28,62 +27,82 @@ export default class HomeComponent extends Component {
         this.localGroupName = ''
     }
 
-    componentWillMount() {
+    _loadRecentlyConnected(myUserId, connectionList) {
+
+        const {addRecentlyConnectedUser, recentlyConnectedUsers} = this.props;
+
+        for (let connectionId in connectionList) {
+
+            if (connectionList.hasOwnProperty(connectionId)) {
+                let connection = connectionList[connectionId];
+                let userId = connection.userId;
+
+                if (userId === myUserId) {
+                    continue;
+                }
+
+                getPublicFields(userId).then(publicFields => {
+
+                    if (JSON.stringify(publicFields) !== 'null') {
+                        //set connected users as list
+                        addRecentlyConnectedUser({
+                            displayName: publicFields.displayName,
+                            avatarURL: publicFields.avatarImageUrl,
+                            userId: userId,
+                            selected: false,
+                            timestamp: connection.timestamp
+                        });
+                    }
+                }).catch(error => alert(error));
+            }
+        }
+    }
+
+    _getGroups(myGroups) {
+
+        const {addGroup} = this.props;
+
+        for (let groupId in myGroups) {
+
+            if (myGroups.hasOwnProperty(groupId)) {
+                getGroup(groupId).then(response => {
+                    let group = {};
+
+                    group.groupId = groupId;
+                    group.groupName = response.groupName;
+                    group.messages = response.messages === '' ? {} : response.messages;
+                    group.createdOn = response.createdOn;
+                    group.participants = response.participants === '' ? {} : response.participants;
+
+
+                    addGroup(group);
+                }).catch(error => console.log(error));
+            }
+        }
+    }
+
+    componentDidMount() {
 
         // actions
-        const { addGroup, resetGroups, addRecentlyConnectedUser, resetRecentlyConnectedUsers } = this.props;
-        resetRecentlyConnectedUsers();
-        resetGroups();
+        const { resetGroups } = this.props;
 
         AsyncStorage.getItem('userData').then(udJSON => {
             let userData = JSON.parse(udJSON);
             let myUserId = userData.firebaseUserId;
 
-            getRecentlyConnected().then(connectionList => {
+            firebase.database().ref('gamePortal/recentlyConnected').on('value', recentlyConnectedUsers => {
+                let jsonString = JSON.stringify(recentlyConnectedUsers);
+                let rcuParsed = JSON.parse(jsonString);
 
-                for (let connectionId in connectionList) {
+                this._loadRecentlyConnected(myUserId, rcuParsed);
+            });
 
-                    if (connectionList.hasOwnProperty(connectionId)) {
-                        let connection = connectionList[connectionId];
-                        let userId = connection.userId;
+            firebase.database().ref('users/' + myUserId + '/privateButAddable/groups').on('value', value => {
+                let pfJSON = JSON.stringify(value);
+                let myGroups = JSON.parse(pfJSON);
 
-                        if (userId === userData.firebaseUserId) {
-                            continue;
-                        }
-
-                        getPublicFields(userId).then(publicFields => {
-
-                            if (JSON.stringify(publicFields) !== 'null') {
-                                //set connected users as list
-                                addRecentlyConnectedUser({
-                                    displayName: publicFields.displayName,
-                                    avatarURL: publicFields.avatarImageUrl,
-                                    userId: userId,
-                                    selected: false
-                                });
-                            }
-                        }).catch(error => alert(error));
-                    }
-                }
-            }).catch(error => alert(error));
-
-            getGroups(myUserId).then(myGroupList => {
-
-                for (let groupId in myGroupList) {
-
-                    if (myGroupList.hasOwnProperty(groupId)) {
-                        getGroup(groupId).then(response => {
-                            let group = {};
-
-                            group.groupId = groupId;
-                            group.groupName = response.groupName;
-
-                            addGroup(group);
-                        }).catch(error => console.log(error));
-                    }
-                }
-
-            }).catch(error => alert(error));
+                this._getGroups(myGroups);
+            });
         });
     }
 
@@ -91,8 +110,8 @@ export default class HomeComponent extends Component {
 
         console.ignoredYellowBox = ['Setting a timer'];
 
-        const { setLoading, setLoggedOut, switchScreen } = this.props; //actions
-        const { userId } = this.props;
+        const {setLoading, setLoggedOut, switchScreen} = this.props; //actions
+        const {userId} = this.props;
         setLoading(true);
 
         firebase.database().ref('/users/' + userId + '/publicFields').once('value').then(response => {
@@ -115,7 +134,7 @@ export default class HomeComponent extends Component {
     }
 
     _goChatting(group) {
-        const { switchChatRoom, switchScreen } = this.props;
+        const {switchChatRoom, switchScreen} = this.props;
         // Update current group
         switchChatRoom(group);
         switchScreen('Chat');
@@ -123,7 +142,7 @@ export default class HomeComponent extends Component {
 
     _createGroup(users, groupName) {
 
-        const { addGroup } = this.props;
+        const {addGroup} = this.props;
 
         AsyncStorage.getItem('userData').then(udJSON => {
 
@@ -144,7 +163,7 @@ export default class HomeComponent extends Component {
                 participants: participants,
                 groupName: groupName,
                 createdOn: createdOn,
-                messages: '',
+                messages: {},
                 matches: ''
             };
 
@@ -171,7 +190,7 @@ export default class HomeComponent extends Component {
     }
 
     renderGroups() {
-        const { groups } = this.props;
+        const {groups} = this.props;
 
         return (
             <ScrollView>
@@ -193,7 +212,7 @@ export default class HomeComponent extends Component {
     }
 
     renderActiveUsers() {
-        const { recentlyConnectedUsers, switchSelectUser } = this.props;
+        const {recentlyConnectedUsers, switchSelectUser} = this.props;
 
         return (
             <ScrollView>
@@ -202,7 +221,7 @@ export default class HomeComponent extends Component {
                         recentlyConnectedUsers.map((rcu, index) => (
                             <ListItem
                                 roundAvatar
-                                avatar={{uri:rcu.avatarURL}}
+                                avatar={{uri: rcu.avatarURL}}
                                 key={index}
                                 title={rcu.displayName}
                                 hideChevron={true}
@@ -219,11 +238,11 @@ export default class HomeComponent extends Component {
     }
 
     _renderTab() {
-        const { tab, recentlyConnectedUsers } = this.props;
+        const {tab, recentlyConnectedUsers} = this.props;
 
-        switch(tab) {
+        switch (tab) {
             case 'tabChats':
-            let myGroups = this.renderGroups();
+                let myGroups = this.renderGroups();
                 return (
                     <View>
                         {myGroups}
@@ -247,15 +266,15 @@ export default class HomeComponent extends Component {
                 let createGroupView = (
                     <View>
                         <TextInput
-                            onChangeText = { (text) => this.localGroupName = text }
-                            placeholder = "Create a group name"
+                            onChangeText={(text) => this.localGroupName = text}
+                            placeholder="Create a group name"
                             style={styles.textInput}
                         />
 
                         <Button
-                                onPress = {() => this._createGroup(selectedUsers, this.localGroupName)}
-                                disabled={selectedUsers.length === 0}
-                                title="Create Group"
+                            onPress={() => this._createGroup(selectedUsers, this.localGroupName)}
+                            disabled={selectedUsers.length === 0}
+                            title="Create Group"
                         />
                     </View>
                 );
@@ -270,9 +289,9 @@ export default class HomeComponent extends Component {
                 );
             default:
                 return (
-                  <View>
-                      <Text>Search</Text>
-                  </View>
+                    <View>
+                        <Text>Search</Text>
+                    </View>
                 );
         }
     }
@@ -280,16 +299,16 @@ export default class HomeComponent extends Component {
 
     render() {
 
-        const { username, avatarURL, loading, tab } = this.props;
-        const { switchTab } = this.props;
+        const {username, avatarURL, loading, tab} = this.props;
+        const {switchTab} = this.props;
 
         if (loading) {
             return (
-              <View style={styles.container} >
-                  <Text style={styles.header}>
-                      Please Wait
-                  </Text>
-              </View>
+                <View style={styles.container}>
+                    <Text style={styles.header}>
+                        Please Wait
+                    </Text>
+                </View>
             );
         }
 
@@ -306,7 +325,7 @@ export default class HomeComponent extends Component {
 
                     <Button
                         style={styles.signoutButton}
-                        onPress = {() => this._signOut()}
+                        onPress={() => this._signOut()}
                         title="Sign Out"
                         color="#841584"
                     />
@@ -329,6 +348,6 @@ export default class HomeComponent extends Component {
                     </Tabs>
                 </View>
 
-        </View>);
+            </View>);
     }
 }
