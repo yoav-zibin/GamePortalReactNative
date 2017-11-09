@@ -109,12 +109,23 @@ export default class LoginDefaultComponent extends Component {
 
     _playAsSomeoneElse() {
 
+        console.ignoredYellowBox = ['Setting a timer'];
+
         const { setLoading, setLoggedOut } = this.props; //actions
+        const { userId } = this.props;
         setLoading(true);
 
-        firebase.auth().signOut().catch((error) => {
-            alert(error) //firebase failed signout
-        });
+        firebase.database().ref('/users/' + userId + '/publicFields').once('value').then(response => {
+            let rJSON = JSON.stringify(response);
+            let r = JSON.parse(rJSON);
+
+            r['isConnected'] = false;
+            r['lastSeen'] = firebase.database.ServerValue.TIMESTAMP;
+
+            firebase.database().ref('/users/' + userId + '/publicFields').set(r).then(() => {
+                firebase.auth().signOut().catch(error => alert(error));
+            }).catch(error => alert(error));
+        }).catch(error => alert(error));
 
         AsyncStorage.removeItem('userData').then(() => { //Delete user from our storage
             setLoggedOut();

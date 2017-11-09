@@ -14,7 +14,8 @@ const mapStateToProps = state => ({
     loading: state.screen.loading,
     tab: state.home.tab,
     recentlyConnectedUsers: state.recentlyConnected.users,
-    groups: state.groups
+    groups: state.groups,
+    userId: state.user.firebaseUserId
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -10,7 +10,7 @@ const mapStateToProps = state => ({
     loggedIn: state.user.loggedIn,
     username: state.user.username,
     avatarURL: state.user.avatarURL,
-    firebaseUserId: state.user.firebaseUserId
+    userId: state.user.firebaseUserId
 });
 
 const mapDispatchToProps = dispatch => ({
