@@ -3,8 +3,7 @@ import { AsyncStorage } from 'react-native';
 import * as firebase from 'firebase';
 
 function firebaseConnect(firebaseUserId) {
-    let idSuffix = (Math.random().toString() + 'abcd').substr(2);
-    firebase.database().ref('gamePortal/recentlyConnected/' + idSuffix).set({
+    firebase.database().ref('gamePortal/recentlyConnected/').push({
         userId: firebaseUserId,
         timestamp: firebase.database.ServerValue.TIMESTAMP
     });
@@ -30,11 +29,19 @@ function firebaseLoginFlow(loginObject) {
 
             let userId = firebaseUser.uid;
 
-
             firebase.database().ref('/users/' + userId).once('value').then(value => {
                 if (JSON.stringify(value) === 'null') { //new user
                     let userObject = getUserObject(firebaseUser);
                     firebase.database().ref('/users/' + userId).set(userObject);
+                } else { //need to set connected
+                    let vJSON = JSON.stringify(value);
+                    let v = JSON.parse(vJSON);
+
+                    let publicFields = v['publicFields'];
+                    publicFields['isConnected'] = true;
+                    publicFields['lastSeen'] = firebase.database.ServerValue.TIMESTAMP;
+
+                    firebase.database().ref('/users/' + userId + '/publicFields').set(publicFields).catch(error => alert(error));
                 }
 
                 resolve(firebaseUser);

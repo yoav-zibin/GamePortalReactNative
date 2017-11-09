@@ -8,6 +8,7 @@ const mapStateToProps = state => ({
     loggingIn: state.user.loggingIn,
     loggedIn: state.user.loggedIn,
     username: state.user.username,
+    userId: state.user.firebaseUserId
 });
 
 const mapDispatchToProps = dispatch => ({
