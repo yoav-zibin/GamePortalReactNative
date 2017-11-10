@@ -123,6 +123,14 @@ const styles = StyleSheet.create({
     textInput: {
         width: width,
         borderWidth: 1,
+    },
+
+    online: {
+        color: '#28ba16'
+    },
+
+    offline: {
+        color: '#b40213'
     }
 });
 
