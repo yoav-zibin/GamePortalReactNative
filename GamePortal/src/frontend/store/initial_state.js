@@ -21,6 +21,10 @@ export const initialState = {
         users: []
     },
 
+    createGroup: {
+        users: []
+    },
+
     chatRoom: {
         groupId: undefined,
         groupName: undefined

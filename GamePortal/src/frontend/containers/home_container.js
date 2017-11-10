@@ -5,7 +5,7 @@ import { switchTab } from "../actions/home_actions";
 import { addRecentlyConnectedUser, resetRecentlyConnectedUsers, switchSelectUser } from "../actions/recently_connected_actions";
 
 import HomeComponent from '../components/home_component'
-import {addGroup, resetGroups} from "../actions/group_actions";
+import {addGroup, resetGroups, setCreateGroupUsers} from "../actions/group_actions";
 import {switchChatRoom} from "../actions/chat_room_actions";
 
 const mapStateToProps = state => ({
@@ -28,7 +28,8 @@ const mapDispatchToProps = dispatch => ({
     switchSelectUser: userId => dispatch(switchSelectUser(userId)),
     addGroup: group => dispatch(addGroup(group)),
     resetGroups: () => dispatch(resetGroups()),
-    switchChatRoom: groupId => dispatch(switchChatRoom(groupId))
+    switchChatRoom: groupId => dispatch(switchChatRoom(groupId)),
+    setCreateGroupUsers: users => dispatch(setCreateGroupUsers(users))
 });
 
 export const HomeContainer = connect(mapStateToProps, mapDispatchToProps)(HomeComponent);

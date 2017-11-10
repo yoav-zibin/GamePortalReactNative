@@ -26,11 +26,15 @@ const styles = StyleSheet.create({
     },
 
     viewContainer: {
-        flex: 0.9
+        flex: 0.9,
+        width: width
     },
 
-    createGroupButton: {
-        flex: 0.1
+    createGroupView: {
+        position: 'absolute',
+        bottom: 50,
+        width: 150,
+        left: (Dimensions.get('window').width / 2) - 75,
     },
 
     tabButton: {
