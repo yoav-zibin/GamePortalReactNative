@@ -50,7 +50,8 @@ export default class HomeComponent extends Component {
                             avatarURL: publicFields.avatarImageUrl,
                             userId: userId,
                             selected: false,
-                            timestamp: connection.timestamp
+                            timestamp: connection.timestamp,
+                            online: publicFields.isConnected
                         });
                     }
                 }).catch(error => alert(error));
@@ -141,60 +142,9 @@ export default class HomeComponent extends Component {
     }
 
     _createGroup(users) {
-
         const {setCreateGroupUsers, switchScreen} = this.props;
-
-        //set users in group in global state
         setCreateGroupUsers(users);
         switchScreen('CreateGroup');
-
-
-        /*switch to screen for creating group with these users
-
-        AsyncStorage.getItem('userData').then(udJSON => {
-
-            let userData = JSON.parse(udJSON);
-            let creatorId = userData.firebaseUserId;
-            let createdOn = firebase.database.ServerValue.TIMESTAMP;
-
-            let groupsRef = firebase.database().ref('gamePortal/groups/');
-
-            let participants = {};
-            participants[creatorId] = {participantIndex: 0};
-            for (let p = 0; p < users.length; p++) {
-                let participant = users[p];
-                participants[participant.userId] = {participantIndex: p + 1};
-            }
-
-            let group = {
-                participants: participants,
-                groupName: groupName,
-                createdOn: createdOn,
-                messages: {},
-                matches: ''
-            };
-
-            let groupId = groupsRef.push(group).key;
-
-            firebase.database().ref('users/' + creatorId + '/privateButAddable/groups/' + groupId).set({
-                addedByUid: creatorId,
-                timestamp: createdOn
-            });
-
-            for (let i = 0; i < users.length; i++) {
-                let uid = users[i].userId;
-                firebase.database().ref('users/' + uid + '/privateButAddable/groups/' + groupId).set({
-                    addedByUid: creatorId,
-                    timestamp: createdOn
-                });
-            }
-
-
-            group['groupId'] = groupId;
-            addGroup(group);
-            this._goChatting(group);
-        });
-        */
     }
 
     renderGroups() {
@@ -237,6 +187,7 @@ export default class HomeComponent extends Component {
                                 switchOnTintColor="#62B36C"
                                 switched={rcu.selected}
                                 onSwitch={() => switchSelectUser(rcu.userId)}
+                                label={(<Text style={rcu.online? styles.online : styles.offline}>{"███"}</Text>)}
                             />
                         ))
                     }
