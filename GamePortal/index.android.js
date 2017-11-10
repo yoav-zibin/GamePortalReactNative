@@ -20,6 +20,7 @@ import { ChatContainer } from './src/frontend/containers/chat_container';
 
 
 import {switchScreen} from "./src/frontend/actions/screen_actions";
+import {CreateGroupContainer} from "./src/frontend/containers/create_group_container";
 
 
 // Initialize Firebase
@@ -68,6 +69,9 @@ export default class GamePortalReactNative extends Component {
                 case 'Home':
                     newScreen = 'Splash';
                     break;
+                case 'CreateGroup':
+                    newScreen = 'Home';
+                    break;
                 case 'Chat':
                     newScreen = 'Home';
                     break;
@@ -95,6 +99,8 @@ export default class GamePortalReactNative extends Component {
                 return (<CreateAccountContainer />);
             case 'Home':
                 return (<HomeContainer />);
+            case 'CreateGroup':
+                return (<CreateGroupContainer/>);
             case 'Chat':
                 return (<ChatContainer />);
             default:

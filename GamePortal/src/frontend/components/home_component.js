@@ -81,7 +81,7 @@ export default class HomeComponent extends Component {
         }
     }
 
-    componentDidMount() {
+    componentWillMount() {
 
         // actions
         const { resetGroups } = this.props;
@@ -140,9 +140,16 @@ export default class HomeComponent extends Component {
         switchScreen('Chat');
     }
 
-    _createGroup(users, groupName) {
+    _createGroup(users) {
 
-        const {addGroup} = this.props;
+        const {setCreateGroupUsers, switchScreen} = this.props;
+
+        //set users in group in global state
+        setCreateGroupUsers(users);
+        switchScreen('CreateGroup');
+
+
+        /*switch to screen for creating group with these users
 
         AsyncStorage.getItem('userData').then(udJSON => {
 
@@ -187,6 +194,7 @@ export default class HomeComponent extends Component {
             addGroup(group);
             this._goChatting(group);
         });
+        */
     }
 
     renderGroups() {
@@ -263,28 +271,26 @@ export default class HomeComponent extends Component {
                     }
                 }
 
-                let createGroupView = (
-                    <View>
-                        <TextInput
-                            onChangeText={(text) => this.localGroupName = text}
-                            placeholder="Create a group name"
-                            style={styles.textInput}
-                        />
+                let createGroupButton = undefined;
 
-                        <Button
-                            onPress={() => this._createGroup(selectedUsers, this.localGroupName)}
-                            disabled={selectedUsers.length === 0}
-                            title="Create Group"
-                        />
-                    </View>
-                );
+                if (selectedUsers.length > 0) {
+                    createGroupButton = (
+                        <View style={styles.createGroupView}>
+                            <Button
+                                onPress={() => this._createGroup(selectedUsers, this.localGroupName)}
+                                disabled={selectedUsers.length === 0}
+                                title="Create Group"
+                            />
+                        </View>
+                    );
+                }
 
                 let activeUsers = this.renderActiveUsers();
 
                 return (
                     <View>
-                        {createGroupView}
                         {activeUsers}
+                        {createGroupButton}
                     </View>
                 );
             default:
@@ -334,6 +340,7 @@ export default class HomeComponent extends Component {
                 <View style={styles.tabbedContainer}>
 
                     {this._renderTab()}
+
 
                     <Tabs
                         selected={tab}
