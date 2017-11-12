@@ -12,48 +12,106 @@ function firebaseConnect(firebaseUserId) {
 function firebaseLoginFlow(loginObject) {
     console.ignoredYellowBox = ['Setting a timer'];
 
-    return new Promise((resolve, reject) => {
-        firebase.auth().signInWithCredential(loginObject.credential).then(firebaseUser => {
-            //Firebase accepted the login credential
+    console.log("1");
 
-            let userData = {
-                'credentialType': loginObject.credentialType,
-                'accessToken': loginObject.accessToken,
-                'username': firebaseUser.displayName ? firebaseUser.displayName : "",
-                'avatarURL': firebaseUser.photoURL ? firebaseUser.photoURL : "",
-                'firebaseUserId': firebaseUser.uid
-            };
+    if (loginObject.credentialType === 'anonymous') {
 
-            AsyncStorage.setItem('userData', JSON.stringify(userData));
+        console.log("2");
 
+        return new Promise((resolve, reject) => {
 
-            let userId = firebaseUser.uid;
+            console.log("3");
 
-            firebase.database().ref('/users/' + userId).once('value').then(value => {
-                if (JSON.stringify(value) === 'null') { //new user
-                    let userObject = getUserObject(firebaseUser);
-                    firebase.database().ref('/users/' + userId).set(userObject);
-                } else { //need to set connected
-                    let vJSON = JSON.stringify(value);
-                    let v = JSON.parse(vJSON);
+            firebase.auth().signInAnonymously().then(firebaseUser => { //Firebase accepted anonymous login
 
-                    let publicFields = v['publicFields'];
-                    publicFields['isConnected'] = true;
-                    publicFields['lastSeen'] = firebase.database.ServerValue.TIMESTAMP;
+                console.log("4");
 
-                    firebase.database().ref('/users/' + userId + '/publicFields').set(publicFields).catch(error => alert(error));
-                }
+                firebaseUser.updateProfile({ //set the username
+                    displayName: loginObject.credential
+                }).then(() => {
 
-                resolve(firebaseUser);
+                    console.log("5");
+
+                    let userData = {
+                        'credentialType': "anonymous",
+                        'accessToken': "",
+                        'username': loginObject.credential,
+                        'avatarURL': "https://ssl.gstatic.com/images/branding/product/1x/avatar_circle_blue_512dp.png",
+                        'firebaseUserId': firebaseUser.uid
+                    };
+
+                    AsyncStorage.setItem('userData', JSON.stringify(userData));
+                    saveUserObject(firebaseUser).then(firebaseUser => resolve(firebaseUser)).catch(error => reject(error));
+
+                    console.log("6");
+
+                });
             }).catch(error => reject(error));
+        });
 
-        }).catch(err => reject(err));
+    } else {
+
+        return new Promise((resolve, reject) => {
+            firebase.auth().signInWithCredential(loginObject.credential).then(firebaseUser => {
+                //Firebase accepted the login credential
+
+                let userData = {
+                    'credentialType': loginObject.credentialType,
+                    'accessToken': loginObject.accessToken,
+                    'username': firebaseUser.displayName ? firebaseUser.displayName : "",
+                    'avatarURL': firebaseUser.photoURL ? firebaseUser.photoURL : "",
+                    'firebaseUserId': firebaseUser.uid
+                };
+
+                AsyncStorage.setItem('userData', JSON.stringify(userData));
+                saveUserObject(firebaseUser).then(firebaseUser => resolve(firebaseUser)).catch(error => reject(error));
+
+            }).catch(err => reject(err));
+        });
+
+    }
+}
+
+export function saveUserObject(firebaseUser) {
+    let userId = firebaseUser.uid;
+
+    return new Promise((resolve, reject) => {
+
+        console.log("A");
+
+        firebase.database().ref('/users/' + userId).once('value').then(value => {
+            console.log("B");
+            if (JSON.stringify(value) === 'null') { //new user
+                let userObject = getUserObject(firebaseUser);
+
+                console.log("C");
+
+                console.log(JSON.stringify(userObject));
+
+                firebase.database().ref('/users/' + userId).set(userObject);
+
+                console.log("D");
+            } else { //need to set connected
+                console.log("E");
+
+                let vJSON = JSON.stringify(value);
+                let v = JSON.parse(vJSON);
+
+                let publicFields = v['publicFields'];
+                publicFields['isConnected'] = true;
+                publicFields['lastSeen'] = firebase.database.ServerValue.TIMESTAMP;
+
+                firebase.database().ref('/users/' + userId + '/publicFields').set(publicFields).catch(error => alert(error));
+                console.log("F");
+            }
+
+            resolve(firebaseUser);
+        }).catch(error => reject(error));
     });
-
-
 }
 
 function getUserObject(firebaseUser) {
+    console.log("B2");
     return {
         privateFields: {
             email: firebaseUser.email ? firebaseUser.email : "",
@@ -66,7 +124,7 @@ function getUserObject(firebaseUser) {
             pushNotificationsToken: ""
         },
         publicFields: {
-            avatarImageUrl: firebaseUser.photoURL ? firebaseUser.photoURL : "",
+            avatarImageUrl: firebaseUser.photoURL ? firebaseUser.photoURL : "https://ssl.gstatic.com/images/branding/product/1x/avatar_circle_blue_512dp.png",
             displayName: firebaseUser.displayName ? firebaseUser.displayName : "",
             isConnected: true,
             lastSeen: firebase.database.ServerValue.TIMESTAMP

@@ -94,17 +94,22 @@ export default class LoginDefaultComponent extends Component {
         });
     }
 
+     static _selectRandomUsername() {
+        let prefix = ['Fat', 'Skinny', 'Fast', 'Slow', 'Stinky', 'Naked', 'Obese', 'Flatulent', 'Sick', 'Nasty',
+            'Smelly', 'Rotund', 'Poor', 'Rich', 'Messy', 'Shy', 'Braggadocios'];
+
+        let suffix = ['Dog', 'Cat', 'Llama', 'Fish', 'Lizard', 'Snake', 'Hamster', 'Gerbil', 'Rabbit', 'Rat', 'Mouse',
+            'Fox', 'Hedgehog', 'Pig', 'Cow', 'Horse', 'Sheep', 'Chicken', 'Turkey', 'Rooster'];
+
+        return prefix[Math.floor(Math.random()*prefix.length)] + suffix[Math.floor(Math.random()*suffix.length)];
+    }
+
     _anonymousLogin() {
 
         const { setLoggingIn, switchScreen, setLoggedInUser } = this.props;
         setLoggingIn();
 
-        firebase.auth().signInAnonymously().then(() => {
-            setLoggedInUser('Anonymous', null, null);
-            switchScreen('Home');
-        }).catch((error => {
-            alert(error);
-        }));
+        this._login(true, "anonymous", LoginDefaultComponent._selectRandomUsername(), null)
     }
 
     _playAsSomeoneElse() {
