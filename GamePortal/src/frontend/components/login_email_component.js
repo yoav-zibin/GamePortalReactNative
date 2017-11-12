@@ -5,6 +5,7 @@ import { AsyncStorage, Button, Image, Text, TextInput, View } from 'react-native
 import * as firebase from 'firebase';
 
 import styles from '../styles/common_style'
+import {firebaseConnect, saveUserObject} from "../../backend/users/login";
 
 export default class LoginEmailComponent extends Component {
 
@@ -20,9 +21,26 @@ export default class LoginEmailComponent extends Component {
         setLoading(true);
 
         firebase.auth().signInWithEmailAndPassword(this.emailAddress, this.password).then((firebaseUser) => { //firebase login successful
-            setLoggedInUser(firebaseUser.displayName, JSON.stringify(null), firebaseUser.uid);
-            setLoading(false);
-            switchScreen('Home');
+            let userData = {
+                'credentialType': "email",
+                'accessToken': "",
+                'username': firebaseUser.displayName,
+                'avatarURL': "https://ssl.gstatic.com/images/branding/product/1x/avatar_circle_blue_512dp.png",
+                'firebaseUserId': firebaseUser.uid,
+                "email": this.emailAddress,
+                "password": this.password
+            };
+
+            AsyncStorage.setItem('userData', JSON.stringify(userData));
+
+            saveUserObject(firebaseUser).then(() => {
+                firebaseConnect(firebaseUser.uid);
+                setLoggedInUser(firebaseUser.displayName, "https://ssl.gstatic.com/images/branding/product/1x/avatar_circle_blue_512dp.png", firebaseUser.uid);
+                setLoading(false);
+                switchScreen('Home');
+            }).catch(error => alert(error));
+
+
         }).catch((error) => { // login to firebase failed
             alert(error);
             setLoading(false);
