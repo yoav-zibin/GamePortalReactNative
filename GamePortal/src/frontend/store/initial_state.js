@@ -30,6 +30,7 @@ export const initialState = {
         groupName: undefined
     },
     groups: [],
+
     messages: [],
 
 };

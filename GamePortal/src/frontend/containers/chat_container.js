@@ -2,13 +2,13 @@ import { connect } from 'react-redux';
 import { switchScreen, setLoading } from "../actions/screen_actions";
 import { setLoggedOut } from "../actions/user_actions";
 import { sendMessage, fetchMessages } from '../actions/chat_room_actions';
-import { addMessage, resetMessages} from "../actions/message_actions";
+import { addMessage, resetMessages } from "../actions/message_actions";
 
 import ChatComponent from '../components/chat_component';
 
 const mapStateToProps = state => ({
     chatHeight: state.chatRoom.height,
-    user: state.user,
+    users: state.createGroup.users,
     groupId: state.chatRoom.groupId,
     groupName: state.chatRoom.groupName,
     loading: state.screen.loading,
