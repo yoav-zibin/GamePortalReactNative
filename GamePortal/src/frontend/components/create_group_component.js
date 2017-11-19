@@ -80,7 +80,6 @@ export default class CreateGroupComponent extends Component {
                 };
 
                 firebase.database().ref('gamePortal/groups/' + groupId + '/messages').push(message);
-                addMessage(message);
             }
 
             this._cleanUp();

@@ -48,21 +48,6 @@ export const receivedAllMessages = () => ({
     receivedAt: Date.now()
 });
 
-// (Didn't finish it) Async actions creator to fetch messages from firebase
-export function fetchMessages(groupId) {
-    return function (dispatch) {
-        dispatch(startFetchingMessages());
-
-        firebase.database().ref('gamePortal/groups' + groupId).child('messages').on('value', (snapshot) => {
-            // gets around Redux panicking about actions in reducers
-            setTimeout(() => {
-                const messages = snapshot.val() || [];
-                console.log(messages);
-                dispatch(getMessages(messages))
-            }, 0);
-        });
-    }
-}
 
 // Send a message
 export function sendMessage(messageInformation) {

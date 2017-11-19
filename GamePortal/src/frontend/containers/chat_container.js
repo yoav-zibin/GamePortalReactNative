@@ -12,7 +12,8 @@ const mapStateToProps = state => ({
     groupId: state.chatRoom.groupId,
     groupName: state.chatRoom.groupName,
     loading: state.screen.loading,
-    messages: state.messages
+    messages: state.messages,
+    user: state.user
 });
 
 const mapDispatchToProps = dispatch => ({
