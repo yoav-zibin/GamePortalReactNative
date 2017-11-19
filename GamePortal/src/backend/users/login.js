@@ -12,25 +12,15 @@ function firebaseConnect(firebaseUserId) {
 function firebaseLoginFlow(loginObject) {
     console.ignoredYellowBox = ['Setting a timer'];
 
-    console.log("1");
-
     if (loginObject.credentialType === 'anonymous') {
-
-        console.log("2");
 
         return new Promise((resolve, reject) => {
 
-            console.log("3");
-
             firebase.auth().signInAnonymously().then(firebaseUser => { //Firebase accepted anonymous login
-
-                console.log("4");
 
                 firebaseUser.updateProfile({ //set the username
                     displayName: loginObject.credential
                 }).then(() => {
-
-                    console.log("5");
 
                     let userData = {
                         'credentialType': "anonymous",
@@ -42,9 +32,6 @@ function firebaseLoginFlow(loginObject) {
 
                     AsyncStorage.setItem('userData', JSON.stringify(userData));
                     saveUserObject(firebaseUser).then(firebaseUser => resolve(firebaseUser)).catch(error => reject(error));
-
-                    console.log("6");
-
                 });
             }).catch(error => reject(error));
         });
@@ -77,23 +64,13 @@ export function saveUserObject(firebaseUser) {
 
     return new Promise((resolve, reject) => {
 
-        console.log("A");
-
         firebase.database().ref('/users/' + userId).once('value').then(value => {
-            console.log("B");
             if (JSON.stringify(value) === 'null') { //new user
                 let userObject = getUserObject(firebaseUser);
 
-                console.log("C");
-
-                console.log(JSON.stringify(userObject));
-
                 firebase.database().ref('/users/' + userId).set(userObject);
 
-                console.log("D");
             } else { //need to set connected
-                console.log("E");
-
                 let vJSON = JSON.stringify(value);
                 let v = JSON.parse(vJSON);
 
@@ -102,7 +79,6 @@ export function saveUserObject(firebaseUser) {
                 publicFields['lastSeen'] = firebase.database.ServerValue.TIMESTAMP;
 
                 firebase.database().ref('/users/' + userId + '/publicFields').set(publicFields).catch(error => alert(error));
-                console.log("F");
             }
 
             resolve(firebaseUser);
@@ -111,7 +87,6 @@ export function saveUserObject(firebaseUser) {
 }
 
 function getUserObject(firebaseUser) {
-    console.log("B2");
     return {
         privateFields: {
             email: firebaseUser.email ? firebaseUser.email : "",
