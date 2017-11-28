@@ -106,12 +106,6 @@ export default class ChatComponent extends Component {
             senderUid: user.firebaseUserId
         };
 
-        let displayMessage = {
-            message: messageText,
-            timestamp: firebase.database.ServerValue.TIMESTAMP,
-            avatarURL: user.avatar
-        };
-
         this.textInput.clear();
         firebase.database().ref('gamePortal/groups/' + groupId + '/messages').push(message);
     }
@@ -136,6 +130,10 @@ export default class ChatComponent extends Component {
                 <View style={styles.headerContainer}>
                     <NavigationBar
                         title={{title: groupName}}
+                        leftButton={{
+                            title: 'Game',
+                            handler: () => switchScreen('GameSpec')
+                        }}
                         rightButton={{
                             title: 'Back',
                             handler: () => switchScreen('Home')

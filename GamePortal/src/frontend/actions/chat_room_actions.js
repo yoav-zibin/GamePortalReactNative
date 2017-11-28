@@ -42,12 +42,6 @@ export const getMessages = (messages) => {
     }
 };
 
-// Receive all messages
-export const receivedAllMessages = () => ({
-    type: 'RECEIVED_ALL_MESSAGES',
-    receivedAt: Date.now()
-});
-
 
 // Send a message
 export function sendMessage(messageInformation) {

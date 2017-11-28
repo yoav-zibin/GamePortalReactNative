@@ -160,7 +160,6 @@ export default class HomeComponent extends Component {
                                 key={index}
                                 title={group.groupName}
                                 onPress={() => this._goChatting(group)}
-                                hideChevron={true}
                             />
                         ))
                     }
@@ -299,10 +298,10 @@ export default class HomeComponent extends Component {
                         selectedStyle={styles.tabButtonSelected}
                         onSelect={selected => switchTab(selected.props.name)}
                     >
-                        <Text name="tabChats">Chats</Text>
+                        <Text name="tabChats">Groups</Text>
                         <Text name="tabFriends">Friends</Text>
                         <Text name="tabActive">Active</Text>
-                        <Text name="tabSearch">Search</Text>
+                        <Text name="tabGame">Game</Text>
                     </Tabs>
                 </View>
 

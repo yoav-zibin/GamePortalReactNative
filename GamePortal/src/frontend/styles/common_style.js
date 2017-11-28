@@ -99,6 +99,21 @@ const styles = StyleSheet.create({
         flex: 0.1
     },
 
+    gameSpecs: {
+        width: width,
+        flex: 0.1
+    },
+
+    gameSpec: {
+        width: width,
+        flex: 0.7
+    },
+
+    selectGame: {
+        width: width,
+        flex: 0.7
+    },
+
     welcome: {
         fontSize: 20,
         textAlign: 'center',

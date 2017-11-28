@@ -7,7 +7,10 @@ import { recentlyConnectedReducer } from "./recently_connected_reducer";
 import { chatRoomReducer } from './chat_room_reducer';
 import { groupReducer } from './group_reducer';
 import { messageReducer } from './message_reducer';
-import {createGroupReducer} from "./create_group_reducer";
+import { createGroupReducer } from "./create_group_reducer";
+import { gameSpecsReducer } from './game_specs_reducer';
+import { gameCenterReducer } from './game_center_reducer';
+import { boardImageReducer } from './board_image_reducer';
 
 export const rootReducer = combineReducers({
     user: userReducer,
@@ -17,5 +20,8 @@ export const rootReducer = combineReducers({
     createGroup: createGroupReducer,
     groups: groupReducer,
     messages: messageReducer,
-    chatRoom: chatRoomReducer
+    chatRoom: chatRoomReducer,
+    gameSpecs: gameSpecsReducer,
+    gameCenter: gameCenterReducer,
+    boardImage: boardImageReducer
 });

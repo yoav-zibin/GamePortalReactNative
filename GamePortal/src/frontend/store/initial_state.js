@@ -29,8 +29,21 @@ export const initialState = {
         groupId: undefined,
         groupName: undefined
     },
+
     groups: [],
 
     messages: [],
 
+    gameSpecs: [],
+
+    gameCenter: {
+        currentGameId: undefined,
+        currentGameName: undefined,
+        boardImageId: undefined
+    },
+
+    boardImage: {
+        url: undefined,
+        dragState: undefined
+    }
 };
