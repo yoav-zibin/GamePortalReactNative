@@ -12,8 +12,9 @@ import { gameSpecsReducer } from './game_specs_reducer';
 import { gameCenterReducer } from './game_center_reducer';
 import { boardImageReducer } from './board_image_reducer';
 import { piecesReducer } from './pieces_reducer';
-import { piecesInfoReducer } from './pieces_info_reducer';
+import { pieceStatesReducer} from './piece_states_reducer';
 import { matchesReducer } from './matches_reducer';
+import {elementReducer} from "./element_reducer";
 
 export const rootReducer = combineReducers({
     user: userReducer,
@@ -27,7 +28,8 @@ export const rootReducer = combineReducers({
     gameSpecs: gameSpecsReducer,
     gameCenter: gameCenterReducer,
     boardImage: boardImageReducer,
+    matches: matchesReducer,
     pieces: piecesReducer,
-    piecesInfo: piecesInfoReducer,
-    matches: matchesReducer
+    elements: elementReducer,
+    pieceStates: pieceStatesReducer
 });

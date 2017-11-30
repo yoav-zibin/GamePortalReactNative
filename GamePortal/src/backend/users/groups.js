@@ -4,8 +4,7 @@ function getGroup(firebaseGroupId) {
 
     return new Promise((resolve, reject) => {
         firebase.database().ref('gamePortal/groups/' + firebaseGroupId).once('value').then(value => {
-            let pfJSON = JSON.stringify(value);
-            let group = JSON.parse(pfJSON);
+            let group = value.val()
             resolve(group);
         }).catch(error => reject(error));
     });

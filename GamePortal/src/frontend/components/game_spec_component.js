@@ -27,7 +27,7 @@ export default class GameSpecComponent extends Component {
         resetGameSpecs();
 
         for (let i = 0; i < 10; i++) {
-            specId = keys[i];
+            let specId = keys[i];
 
             if (gameSpecs.hasOwnProperty(specId)) {
                 getGameSpec(specId).then(response => {
@@ -56,8 +56,7 @@ export default class GameSpecComponent extends Component {
             let userData = JSON.parse(udJSON);
 
             firebase.database().ref('gameBuilder/gameSpecs/').once('value', gameSpecs => {
-                let jsonString = JSON.stringify(gameSpecs);
-                let specsParsed = JSON.parse(jsonString);
+                let specsParsed = gameSpecs.val();
 
                 this._loadGameSpecs(specsParsed);
             });
@@ -66,11 +65,11 @@ export default class GameSpecComponent extends Component {
 
     
     _chooseGame(gameSpec) {
-        const { switchGame, switchScreen, groupId, addPiece, pieces } = this.props;
+        const { switchGame, switchScreen, groupId, resetPieces, resetElements, resetPieceStates} = this.props;
         // Update current game and add a new match
         let specId = gameSpec.specId;
         let currentPieces = {};
-        let matchId
+        let matchId;
 
         getGameSpec(specId).then(response => {
             let pieces = response.pieces;
@@ -94,15 +93,21 @@ export default class GameSpecComponent extends Component {
             for (let i = 0; i < indexList.length; i++) {
                 firebase.database()
                         .ref('gamePortal/groups/' + groupId + '/matches/' + matchId + '/pieces/')
-                        .child(i)
+                        .child(i.toString())
                         .set(currentPieces[i])
                         .catch(error => console.log(error));
             }
+
+            gameSpec.matchId = matchId;
+
+            resetPieces();
+            resetElements();
+            resetPieceStates();
+            switchGame(gameSpec);
+
+            switchScreen('CurrentGame');
         });
 
-        switchGame(gameSpec);
-
-        switchScreen('CurrentGame');
     }
 
     render() {

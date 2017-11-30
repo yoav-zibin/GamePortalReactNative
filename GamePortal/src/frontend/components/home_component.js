@@ -29,7 +29,7 @@ export default class HomeComponent extends Component {
 
     _loadRecentlyConnected(myUserId, connectionList) {
 
-        const {addRecentlyConnectedUser, recentlyConnectedUsers} = this.props;
+        const {addRecentlyConnectedUser} = this.props;
 
         for (let connectionId in connectionList) {
 
@@ -43,7 +43,7 @@ export default class HomeComponent extends Component {
 
                 getPublicFields(userId).then(publicFields => {
 
-                    if (JSON.stringify(publicFields) !== 'null') {
+                    if (publicFields !== null) {
                         //set connected users as list
                         addRecentlyConnectedUser({
                             displayName: publicFields.displayName,
@@ -92,15 +92,13 @@ export default class HomeComponent extends Component {
             let myUserId = userData.firebaseUserId;
 
             firebase.database().ref('gamePortal/recentlyConnected').on('value', recentlyConnectedUsers => {
-                let jsonString = JSON.stringify(recentlyConnectedUsers);
-                let rcuParsed = JSON.parse(jsonString);
+                let rcuParsed = recentlyConnectedUsers.val();
 
                 this._loadRecentlyConnected(myUserId, rcuParsed);
             });
 
             firebase.database().ref('users/' + myUserId + '/privateButAddable/groups').on('value', value => {
-                let pfJSON = JSON.stringify(value);
-                let myGroups = JSON.parse(pfJSON);
+                let myGroups = value.val();
 
                 this._getGroups(myGroups);
             });
@@ -116,8 +114,7 @@ export default class HomeComponent extends Component {
         setLoading(true);
 
         firebase.database().ref('/users/' + userId + '/publicFields').once('value').then(response => {
-            let rJSON = JSON.stringify(response);
-            let r = JSON.parse(rJSON);
+            let r = response.val();
 
             r['isConnected'] = false;
             r['lastSeen'] = firebase.database.ServerValue.TIMESTAMP;

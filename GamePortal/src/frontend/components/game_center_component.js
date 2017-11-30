@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
-import { List, ListItem } from 'react-native-elements';
 import NavigationBar from 'react-native-navbar';
-import { getGameSpec } from '../../backend/games/game_specs';
-import { 
-    Text, 
-    View, 
+import {
+    View,
     Image,
-    FlatList
 } from 'react-native';
 
 import * as firebase from 'firebase';
@@ -19,90 +15,137 @@ export default class gameCenterComponent extends Component {
         super(props);
     }
 
-    _loadPiecesState(piecesState) {
-        const { addPiece } = this.props;
-        for (let index in piecesState) {
-            let piece = piecesState[index];
-            let pieceDisplay = {
-                elementId: piece.pieceElementId,
-                currentState: piece.initialState
-            };
-            addPiece(pieceDisplay);
-        }
-    }
-
-    _loadPieceInfo(pieceImageInfo, pieceImageId, pieceIndex) {
-        const { addPieceInfo } = this.props;
-        let pieceInfo = {
-            imageInfo: pieceImageInfo,
-            imageId: pieceImageId,
-            index: pieceIndex
-        }
-        addPieceInfo(pieceInfo);
-    }
-
     componentWillMount() {
-        const { groupId, matchId, currentGameId, boardImageId, setBoardImageURL } = this.props;
+        const { groupId, matchId, currentGameId, boardImageId, setBoardImage,
+            addPiece, addElement, addImageToElement, setPieceState } = this.props;
+
+        //Loading background image
 
         firebase.database().ref('gameBuilder/images/' + boardImageId).once('value').then(image => {
-            let jsonString = JSON.stringify(image);
-            let imageParsed = JSON.parse(jsonString);
-            setBoardImageURL(imageParsed.downloadURL);
+            let imageParsed = image.val();
+            setBoardImage(imageParsed.downloadURL, imageParsed.height, imageParsed.width);
         }).catch(error => alert(error));
 
-        firebase.database()
-        .ref('gameBuilder/gameSpecs/' + currentGameId + '/pieces/')
-        .once('value')
-        .then(value => {
-            let jsonString = JSON.stringify(value);
-            let parsed = JSON.parse(jsonString);
-            this._loadPiecesState(parsed);
-        });
-        
-        getGameSpec(currentGameId).then(response => {
+        //Load the elements
 
-            let piecesFromBuilder = response.pieces;
+        firebase.database().ref('gameBuilder/gameSpecs/' + currentGameId + "/pieces").once('value')
+            .then(response => {
+                let pieces = response.val();
 
-            for (let index in piecesFromBuilder) {
-                let pieceFromBuilder = piecesFromBuilder[index];
-                let elementId = pieceFromBuilder.pieceElementId;
+                for (let pieceIndex in pieces) {
+                    if (pieces.hasOwnProperty(pieceIndex)) {
+                        let piece = pieces[pieceIndex];
 
-                let pieceImageId;
-                let pieceImageInfo
+                        let elementId = piece.pieceElementId;
 
-                firebase.database().ref('gameBuilder/elements/' + elementId + '/images/').once('value').then(value => {
-                    let jsonString = JSON.stringify(value);
-                    let parsed = JSON.parse(jsonString);
-                    pieceImageId = parsed[0].imageId;
+                        let pieceObject = {
+                            deckPieceIndex: piece.deckPieceIndex,
+                            pieceElementId: elementId
+                        };
 
-                    firebase.database().ref('gameBuilder/images/' + pieceImageId).once('value').then(value => {
-                        let jsonString = JSON.stringify(value);
-                        pieceImageInfo = JSON.parse(jsonString);
-                        this._loadPieceInfo(pieceImageInfo, pieceImageId, index);
-                    });
+                        addPiece(pieceIndex, pieceObject);
 
-                });
+
+                        firebase.database().ref('gameBuilder/elements/' + elementId).once('value')
+                            .then(response => {
+                                let element = response.val();
+
+                                let elementObject = {
+                                    width: element.width,
+                                    height: element.height,
+                                    images: {},
+                                    isDraggable: element.isDraggable,
+                                    isDrawable: element.isDrawable,
+                                    rotatableDegrees: element.rotatableDegrees
+                                };
+
+                                addElement(elementId, elementObject);
+
+                                let images = element.images;
+
+                                for (let imageIndex in images) {
+                                    if (images.hasOwnProperty(imageIndex)) {
+                                        let image = images[imageIndex];
+
+                                        firebase.database().ref('gameBuilder/images/' + image.imageId).once('value')
+                                            .then(response => {
+                                                let imageParsed = response.val();
+                                                addImageToElement(elementId, imageIndex, imageParsed.downloadURL)
+                                            })
+                                            .catch(error => alert(error));
+                                    }
+                                }
+                            })
+                            .catch(error => alert(error));
+                    }
+                }
+            })
+            .catch(error => alert(error));
+
+        //Load the game state
+
+        firebase.database().ref('gamePortal/groups/' + groupId + "/matches/" + matchId).on('value', snapshot => {
+
+            let match = snapshot.val();
+
+            let lastUpdatedOn = match.lastUpdatedOn;
+            let pieces = match.pieces;
+
+            for (let pieceIndex in pieces) {
+                if (pieces.hasOwnProperty(pieceIndex)) {
+                    let piece = pieces[pieceIndex];
+                    setPieceState(pieceIndex, lastUpdatedOn, piece.currentState);
+                }
             }
         });
     }
 
     render() {
-        const { currentGameName, boardImage, loading, switchScreen, pieces, piecesInfo } = this.props;
-        // console.log(pieces);
-        // console.log(piecesInfo);
+        const { currentGameName, boardImage, switchScreen, setScale, setBoardDimensions,
+            scale, elements, pieces, pieceStates, boardWidth, boardHeight} = this.props;
 
-        if (loading) {
-            return (
-                <View style={styles.container}>
-                    <Text style={styles.header}>
-                        Loading game spec information
-                    </Text>
-                </View>
-            );
+        let renderedPieces = [];
+
+        for (let pieceIndex in pieces) {
+            if (pieces.hasOwnProperty(pieceIndex)) {
+                let piece = pieces[pieceIndex];
+                let pieceState = pieceStates[pieceIndex];
+                let element = elements[piece.pieceElementId];
+
+                if (pieceState === undefined || element === undefined) { //not yet fully loaded element
+                    continue;
+                }
+
+                let imageURL = element.images[pieceState.currentImageIndex];
+                let width = element.width * scale.width;
+                let height = element.height * scale.height;
+                let xPos = pieceState.x + "%";
+                let yPos = pieceState.y + "%";
+                let zDepth = pieceState.zDepth;
+
+                console.log(xPos);
+                console.log(width);
+
+                renderedPieces.push((
+                    <Image
+                        key={Number.parseInt(pieceIndex)}
+                        source={{uri: imageURL}}
+                        resizeMode="contain"
+                        style={{
+                            position: 'absolute',
+                            width: width,
+                            height: height,
+                            left: xPos,
+                            top: yPos,
+                            zIndex: zDepth
+                        }}
+                    />
+                ));
+            }
         }
 
         return (
-            <View style={styles.container}>
+            <View>
                 <View style={styles.headerContainer}>
                     <NavigationBar
                         title={{title: currentGameName}}
@@ -112,21 +155,24 @@ export default class gameCenterComponent extends Component {
                         }}
                     />
                 </View>
-                <View style={styles.gameImageContainer}>
-                    <Image 
-                        style={styles.boardImage}
+                <View style={styles.gameContainer}>
+                    <Image
+                        style={styles.canvas}
                         source={{uri: boardImage.url}}
-                    />
-                    <FlatList
-                        data={piecesInfo}
-                        keyExtractor={(item, index) => {
-                            item.index
+                        resizeMode="stretch"
+                        onLayout={event => {
+                            let height = event.nativeEvent.layout.height;
+                            let width = event.nativeEvent.layout.width;
+
+                            setBoardDimensions(height, width);
+
+                            let scaleHeight = height / boardImage.imageHeight;
+                            let scaleWidth = width / boardImage.imageWidth;
+                            setScale(scaleHeight, scaleWidth);
                         }}
-                        renderItem={
-                            ({item}) => <Image source={{uri: item.imageInfo.downloadURL}} 
-                                               style={{width: 15, height: 15}} />
-                        }
                     />
+
+                    {renderedPieces}
                 </View>
             </View>
         );

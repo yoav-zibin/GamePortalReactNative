@@ -40,16 +40,45 @@ export const initialState = {
         currentGameId: undefined,
         currentGameName: undefined,
         boardImageId: undefined,
+        matchId: undefined,
+        scaleHeight: 0.0,
+        scaleWidth: 0.0
     },
 
     matches: [],
 
     boardImage: {
         url: undefined,
-        dragState: undefined
+        dragState: undefined,
+        imageWidth: undefined,
+        imageHeight: undefined,
+        boardHeight: 0,
+        boardWidth: 0
     },
 
-    pieces: [],
+    elements: {},
+    pieces: {},
+    pieceStates: {},
+};
 
-    piecesInfo: []
+export const elementObject = {
+    width: 0,
+    height: 0,
+    images: [],
+    isDraggable: false,
+    isDrawable: false,
+    rotatableDegrees: 1
+};
+
+export const piecesObject = {
+    deckPieceIndex: -1,
+    pieceElementId: undefined
+};
+
+export const pieceStateObject = {
+    lastUpdatedOn: 0,
+    currentImageIndex: 0,
+    x: 0,
+    y: 0,
+    zDepth: 1
 };

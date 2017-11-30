@@ -120,8 +120,7 @@ export default class LoginDefaultComponent extends Component {
         setLoading(true);
 
         firebase.database().ref('/users/' + userId + '/publicFields').once('value').then(response => {
-            let rJSON = JSON.stringify(response);
-            let r = JSON.parse(rJSON);
+            let r = response.val();
 
             r['isConnected'] = false;
             r['lastSeen'] = firebase.database.ServerValue.TIMESTAMP;
