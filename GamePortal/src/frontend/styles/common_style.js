@@ -109,6 +109,16 @@ const styles = StyleSheet.create({
         flex: 0.7
     },
 
+    gameImageContainer: {
+        width: width,
+        flex: 0.9
+    },
+
+    boardImage: {
+        width: 300,
+        height: 300
+    },
+
     selectGame: {
         width: width,
         flex: 0.7

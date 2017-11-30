@@ -6,9 +6,7 @@ import {
     Text, 
     View, 
     Image,
-    TextInput, 
-    ScrollView, 
-    AsyncStorage 
+    FlatList
 } from 'react-native';
 
 import * as firebase from 'firebase';
@@ -90,6 +88,8 @@ export default class gameCenterComponent extends Component {
 
     render() {
         const { currentGameName, boardImage, loading, switchScreen, pieces, piecesInfo } = this.props;
+        // console.log(pieces);
+        // console.log(piecesInfo);
 
         if (loading) {
             return (
@@ -105,16 +105,29 @@ export default class gameCenterComponent extends Component {
             <View style={styles.container}>
                 <View style={styles.headerContainer}>
                     <NavigationBar
+                        title={{title: currentGameName}}
                         rightButton={{
                             title: 'Back',
                             handler: () => switchScreen('Home')
                         }}
                     />
                 </View>
-                <Image
-                    style={{width: 300, height: 300}}
-                    source={{uri: boardImage.url}}
-                />
+                <View style={styles.gameImageContainer}>
+                    <Image 
+                        style={styles.boardImage}
+                        source={{uri: boardImage.url}}
+                    />
+                    <FlatList
+                        data={piecesInfo}
+                        keyExtractor={(item, index) => {
+                            item.index
+                        }}
+                        renderItem={
+                            ({item}) => <Image source={{uri: item.imageInfo.downloadURL}} 
+                                               style={{width: 15, height: 15}} />
+                        }
+                    />
+                </View>
             </View>
         );
     }
