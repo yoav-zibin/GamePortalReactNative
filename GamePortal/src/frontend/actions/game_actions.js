@@ -25,23 +25,79 @@ export function addMatch(match) {
     }
 }
 
-export function setBoardImageURL(url) {
+export function setBoardImage(url, height, width) {
     return {
-        type: 'SET_BOARD_IMAGE_URL',
-        imageURL: url
+        type: 'SET_BOARD_IMAGE',
+        imageURL: url,
+        width: width,
+        height: height
     }
 }
 
-export function addPiece(piece) {
+export function setScale(height, width) {
+    return {
+        type: 'SET_SCALE',
+        scaleHeight: height,
+        scaleWidth: width
+    }
+}
+
+export function setBoardDimensions(height, width) {
+    return {
+        type: 'SET_BOARD_DIMENSIONS',
+        height: height,
+        width: width
+    }
+}
+
+export function addPiece(pieceIndex, pieceObject) {
     return {
         type: 'ADD_PIECE',
-        piece: piece
+        index: pieceIndex,
+        piece: pieceObject
     }
 }
 
-export function addPieceInfo(info) {
+export function addElement(elementId, elementObject) {
     return {
-        type: 'ADD_PIECE_INFO',
-        pieceInfo: info
+        type: 'ADD_ELEMENT',
+        id: elementId,
+        element: elementObject
+    }
+}
+
+export function addImageToElement(elementId, imageIndex, imageURL) {
+    return {
+        type: 'ADD_IMAGE_TO_ELEMENT',
+        elementId: elementId,
+        index: imageIndex,
+        url: imageURL
+    }
+}
+
+export function setPieceState(pieceIndex, lastUpdatedOn, newState) {
+    return {
+        type: 'SET_PIECE_STATE',
+        pieceIndex: pieceIndex,
+        lastUpdatedOn: lastUpdatedOn,
+        newState: newState
+    }
+}
+
+export function resetPieces() {
+    return {
+        type: 'RESET_PIECES'
+    }
+}
+
+export function resetPieceStates() {
+    return {
+        type: 'RESET_STATES'
+    }
+}
+
+export function resetElements() {
+    return {
+        type: 'RESET_ELEMENTS'
     }
 }

@@ -1,6 +1,9 @@
 import { connect } from 'react-redux';
 import { switchScreen } from "../actions/screen_actions";
-import { setBoardImageURL, addPiece, addPieceInfo } from '../actions/game_actions';
+import {
+    setBoardImage, addPiece, setScale, addElement, addImageToElement, setPieceState,
+    setBoardDimensions
+} from '../actions/game_actions';
 
 import GameCenterComponent from '../components/game_center_component';
 
@@ -13,14 +16,26 @@ const mapStateToProps = state => ({
     boardImageId: state.gameCenter.boardImageId,
     boardImage: state.boardImage,
     pieces: state.pieces,
-    piecesInfo: state.piecesInfo
+    elements: state.elements,
+    pieceStates: state.pieceStates,
+
+    boardHeight: state.boardImage.boardHeight,
+    boardWidth: state.boardImage.boardWidth,
+    scale: {
+        height: state.gameCenter.scaleHeight,
+        width: state.gameCenter.scaleWidth
+    }
 });
 
 const mapDispatchToProps = dispatch => ({
     switchScreen: screen => dispatch(switchScreen(screen)),
-    setBoardImageURL: (imageURL) => dispatch(setBoardImageURL(imageURL)),
-    addPiece: (piece) => dispatch(addPiece(piece)),
-    addPieceInfo: (pieceInfo) => dispatch(addPieceInfo(pieceInfo))
+    setBoardImage: (imageURL, height, width) => dispatch(setBoardImage(imageURL, height, width)),
+    addPiece: (pieceIndex, pieceObject) => dispatch(addPiece(pieceIndex, pieceObject)),
+    setScale: (scaleHeight, scaleWidth) => dispatch(setScale(scaleHeight, scaleWidth)),
+    setBoardDimensions: (height, width) => dispatch(setBoardDimensions(height, width)),
+    addElement: (elementId, elementObject) => dispatch(addElement(elementId, elementObject)),
+    addImageToElement: (elementId, imageIndex, imageURL) => dispatch(addImageToElement(elementId, imageIndex, imageURL)),
+    setPieceState: (pieceIndex, lastUpdatedOn, newState) => dispatch(setPieceState(pieceIndex, lastUpdatedOn, newState))
 });
 
 export const GameCenterContainer = connect(mapStateToProps, mapDispatchToProps)(GameCenterComponent);

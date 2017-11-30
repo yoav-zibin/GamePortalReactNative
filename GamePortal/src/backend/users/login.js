@@ -7,6 +7,8 @@ function firebaseConnect(firebaseUserId) {
         userId: firebaseUserId,
         timestamp: firebase.database.ServerValue.TIMESTAMP
     });
+
+    firebase.database().ref('users/' + firebaseUserId + "/publicFields/isConnected").onDisconnect().set(false);
 }
 
 function firebaseLoginFlow(loginObject) {
@@ -65,14 +67,13 @@ export function saveUserObject(firebaseUser) {
     return new Promise((resolve, reject) => {
 
         firebase.database().ref('/users/' + userId).once('value').then(value => {
-            if (JSON.stringify(value) === 'null') { //new user
+            if (value.val() === null) { //new user
                 let userObject = getUserObject(firebaseUser);
 
                 firebase.database().ref('/users/' + userId).set(userObject);
 
             } else { //need to set connected
-                let vJSON = JSON.stringify(value);
-                let v = JSON.parse(vJSON);
+                let v = value.val();
 
                 let publicFields = v['publicFields'];
                 publicFields['isConnected'] = true;

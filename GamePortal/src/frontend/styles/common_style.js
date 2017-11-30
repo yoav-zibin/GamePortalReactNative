@@ -15,7 +15,8 @@ const styles = StyleSheet.create({
 
     headerContainer: {
         flex: 0.1,
-        width: width
+        width: width,
+        zIndex: 1
     },
 
     tabbedContainer: {
@@ -109,14 +110,19 @@ const styles = StyleSheet.create({
         flex: 0.7
     },
 
-    gameImageContainer: {
-        width: width,
-        flex: 0.9
+    gameContainer: {
+        zIndex: 0,
+        flex: 0.9,
+        position: 'relative'
     },
 
-    boardImage: {
-        width: 300,
-        height: 300
+    canvas: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        zIndex: 0,
     },
 
     selectGame: {
