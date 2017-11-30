@@ -7,8 +7,9 @@ export const gameCenterReducer = (state = initialState.gameCenter, action) => {
             return Object.assign({}, state, {
                 currentGameId: game.specId,
                 currentGameName: game.specName,
-                boardImageId: game.board.imageId
+                boardImageId: game.boardImageId,
             });
+
         default:
             return state;
     }

@@ -11,6 +11,8 @@ export const gameSpecsReducer = (state = initialState.gameSpecs, action) => {
                 updatedSpecsList.splice(length, 0, action.gameSpec);
             }
             return updatedSpecsList;
+        case 'RESET_GAME_SPECS':
+            return [];
         default:
             return state;
     }

@@ -12,12 +12,6 @@ export function switchChatRoom(group) {
     }
 }
 
-// Start fetching messages, set isFetching flag
-export const startFetchingMessages = () => ({
-    type: 'START_FETCHING_MESSAGES'
-});
-
-
 // Add a message
 export function addMessage(message) {
     return {

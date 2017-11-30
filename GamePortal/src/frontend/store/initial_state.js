@@ -39,11 +39,17 @@ export const initialState = {
     gameCenter: {
         currentGameId: undefined,
         currentGameName: undefined,
-        boardImageId: undefined
+        boardImageId: undefined,
     },
+
+    matches: [],
 
     boardImage: {
         url: undefined,
         dragState: undefined
-    }
+    },
+
+    pieces: [],
+
+    piecesInfo: []
 };

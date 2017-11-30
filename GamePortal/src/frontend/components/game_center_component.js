@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { List, ListItem } from 'react-native-elements';
 import NavigationBar from 'react-native-navbar';
+import { getGameSpec } from '../../backend/games/game_specs';
 import { 
     Text, 
     View, 
@@ -20,24 +21,75 @@ export default class gameCenterComponent extends Component {
         super(props);
     }
 
-    componentWillMount() {
-        const { currentGameId, boardImage, boardImageId, setBoardImageURL } = this.props;
+    _loadPiecesState(piecesState) {
+        const { addPiece } = this.props;
+        for (let index in piecesState) {
+            let piece = piecesState[index];
+            let pieceDisplay = {
+                elementId: piece.pieceElementId,
+                currentState: piece.initialState
+            };
+            addPiece(pieceDisplay);
+        }
+    }
 
-        let imageId = boardImageId;
-        let imageURL;
-        firebase.database().ref('gameBuilder/images/' + imageId).once('value').then(image => {
+    _loadPieceInfo(pieceImageInfo, pieceImageId, pieceIndex) {
+        const { addPieceInfo } = this.props;
+        let pieceInfo = {
+            imageInfo: pieceImageInfo,
+            imageId: pieceImageId,
+            index: pieceIndex
+        }
+        addPieceInfo(pieceInfo);
+    }
+
+    componentWillMount() {
+        const { groupId, matchId, currentGameId, boardImageId, setBoardImageURL } = this.props;
+
+        firebase.database().ref('gameBuilder/images/' + boardImageId).once('value').then(image => {
             let jsonString = JSON.stringify(image);
             let imageParsed = JSON.parse(jsonString);
-            console.log(imageParsed)
             setBoardImageURL(imageParsed.downloadURL);
-        }).catch(error => alert(error));  
+        }).catch(error => alert(error));
+
+        firebase.database()
+        .ref('gameBuilder/gameSpecs/' + currentGameId + '/pieces/')
+        .once('value')
+        .then(value => {
+            let jsonString = JSON.stringify(value);
+            let parsed = JSON.parse(jsonString);
+            this._loadPiecesState(parsed);
+        });
         
-        console.log(boardImage);
+        getGameSpec(currentGameId).then(response => {
+
+            let piecesFromBuilder = response.pieces;
+
+            for (let index in piecesFromBuilder) {
+                let pieceFromBuilder = piecesFromBuilder[index];
+                let elementId = pieceFromBuilder.pieceElementId;
+
+                let pieceImageId;
+                let pieceImageInfo
+
+                firebase.database().ref('gameBuilder/elements/' + elementId + '/images/').once('value').then(value => {
+                    let jsonString = JSON.stringify(value);
+                    let parsed = JSON.parse(jsonString);
+                    pieceImageId = parsed[0].imageId;
+
+                    firebase.database().ref('gameBuilder/images/' + pieceImageId).once('value').then(value => {
+                        let jsonString = JSON.stringify(value);
+                        pieceImageInfo = JSON.parse(jsonString);
+                        this._loadPieceInfo(pieceImageInfo, pieceImageId, index);
+                    });
+
+                });
+            }
+        });
     }
 
     render() {
-        const { currentGameName, boardImage, loading } = this.props;
-        console.log(boardImage);
+        const { currentGameName, boardImage, loading, switchScreen, pieces, piecesInfo } = this.props;
 
         if (loading) {
             return (
@@ -51,17 +103,18 @@ export default class gameCenterComponent extends Component {
 
         return (
             <View style={styles.container}>
-                {/* <View style={styles.headerContainer}>
+                <View style={styles.headerContainer}>
                     <NavigationBar
-                        title={{title: currentGameName}}
-                    />
-                </View> */}
-                <View>
-                    <Image
-                        style={{width: 66, height: 58}}
-                        source={{uri: boardImage.url}}
+                        rightButton={{
+                            title: 'Back',
+                            handler: () => switchScreen('Home')
+                        }}
                     />
                 </View>
+                <Image
+                    style={{width: 300, height: 300}}
+                    source={{uri: boardImage.url}}
+                />
             </View>
         );
     }

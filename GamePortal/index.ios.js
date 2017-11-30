@@ -17,10 +17,12 @@ import { HomeContainer } from './src/frontend/containers/home_container'
 import { LoginEmailContainer } from "./src/frontend/containers/login_email_container";
 import { CreateAccountContainer } from "./src/frontend/containers/create_account_container";
 import { ChatContainer } from './src/frontend/containers/chat_container';
+import { GameSpecContainer } from './src/frontend/containers/game_spec_container';
+import { GameCenterContainer } from './src/frontend/containers/game_center_container'
 
 
-import {switchScreen} from "./src/frontend/actions/screen_actions";
-import {CreateGroupContainer} from "./src/frontend/containers/create_group_container";
+import { switchScreen } from "./src/frontend/actions/screen_actions";
+import { CreateGroupContainer } from "./src/frontend/containers/create_group_container";
 
 
 // Initialize Firebase
@@ -97,6 +99,10 @@ export default class GamePortalReactNative extends Component {
                 return (<CreateGroupContainer />);
             case 'Chat':
                 return (<ChatContainer />);
+            case 'GameSpec':
+                return (<GameSpecContainer />);
+            case 'CurrentGame':
+                return (<GameCenterContainer />);
             default:
                 return (<SplashContainer/>);
         }
