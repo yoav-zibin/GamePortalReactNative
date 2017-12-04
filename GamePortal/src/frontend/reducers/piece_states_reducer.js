@@ -28,6 +28,18 @@ export const pieceStatesReducer = (state = initialState.pieceStates, action) => 
         }
 
 
+        case 'SET_PIECE_LOCATION': {
+            let pieceIndex = action.pieceIndex;
+            let x = action.x;
+            let y = action.y;
+
+            let updatedPieceStates = Object.assign({}, state);
+            updatedPieceStates[pieceIndex].x = x;
+            updatedPieceStates[pieceIndex].y = y;
+
+            return updatedPieceStates;
+        }
+
 
         default:
             return state;

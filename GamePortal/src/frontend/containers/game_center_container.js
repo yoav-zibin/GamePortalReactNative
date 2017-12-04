@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import { switchScreen } from "../actions/screen_actions";
 import {
     setBoardImage, addPiece, setScale, addElement, addImageToElement, setPieceState,
-    setBoardDimensions
+    setBoardDimensions, setPieceLocation
 } from '../actions/game_actions';
 
 import GameCenterComponent from '../components/game_center_component';
@@ -35,7 +35,8 @@ const mapDispatchToProps = dispatch => ({
     setBoardDimensions: (height, width) => dispatch(setBoardDimensions(height, width)),
     addElement: (elementId, elementObject) => dispatch(addElement(elementId, elementObject)),
     addImageToElement: (elementId, imageIndex, imageURL) => dispatch(addImageToElement(elementId, imageIndex, imageURL)),
-    setPieceState: (pieceIndex, lastUpdatedOn, newState) => dispatch(setPieceState(pieceIndex, lastUpdatedOn, newState))
+    setPieceState: (pieceIndex, lastUpdatedOn, newState) => dispatch(setPieceState(pieceIndex, lastUpdatedOn, newState)),
+    setPieceLocation: (pieceIndex, x, y) => dispatch(setPieceLocation(pieceIndex, x, y))
 });
 
 export const GameCenterContainer = connect(mapStateToProps, mapDispatchToProps)(GameCenterComponent);
