@@ -84,6 +84,15 @@ export function setPieceState(pieceIndex, lastUpdatedOn, newState) {
     }
 }
 
+export function setPieceLocation(pieceIndex, x, y) {
+    return {
+        type: 'SET_PIECE_LOCATION',
+        pieceIndex: pieceIndex,
+        x: x,
+        y: y
+    }
+}
+
 export function resetPieces() {
     return {
         type: 'RESET_PIECES'
