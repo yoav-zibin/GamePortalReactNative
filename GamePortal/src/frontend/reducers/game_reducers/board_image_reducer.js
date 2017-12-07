@@ -1,4 +1,4 @@
-import { initialState } from '../store/initial_state';
+import { initialState } from '../../store/initial_state';
 
 export const boardImageReducer = (state = initialState.boardImage, action) => {
     switch (action.type) {

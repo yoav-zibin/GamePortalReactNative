@@ -1,4 +1,4 @@
-import { initialState, elementObject } from '../store/initial_state';
+import { initialState, elementObject } from '../../store/initial_state';
 
 export const elementReducer = (state = initialState.elements, action) => {
     switch(action.type) {

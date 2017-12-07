@@ -55,6 +55,19 @@ const styles = StyleSheet.create({
         width: width
     },
 
+    pieceToolbar: {
+        width: '50%',
+        height: '10%',
+        zIndex: 99999,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: '#dbe2e4',
+        position: 'absolute',
+        left: '25%',
+        borderColor: 'black'
+    },
+
     listItemView: {
         flex: 0.1,
         borderColor: '#f5fdff',

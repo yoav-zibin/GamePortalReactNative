@@ -59,6 +59,7 @@ export const initialState = {
     elements: {},
     pieces: {},
     pieceStates: {},
+    selectedPieceIndex: -1
 };
 
 export const elementObject = {
@@ -67,7 +68,8 @@ export const elementObject = {
     images: [],
     isDraggable: false,
     isDrawable: false,
-    rotatableDegrees: 1
+    rotatableDegrees: 1,
+    elementKind: 'standard'
 };
 
 export const piecesObject = {
@@ -80,5 +82,5 @@ export const pieceStateObject = {
     currentImageIndex: 0,
     x: 0,
     y: 0,
-    zDepth: 1
+    zDepth: 1,
 };

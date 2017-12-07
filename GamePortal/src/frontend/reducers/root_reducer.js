@@ -9,12 +9,13 @@ import { groupReducer } from './group_reducer';
 import { messageReducer } from './message_reducer';
 import { createGroupReducer } from "./create_group_reducer";
 import { gameSpecsReducer } from './game_specs_reducer';
-import { gameCenterReducer } from './game_center_reducer';
-import { boardImageReducer } from './board_image_reducer';
-import { piecesReducer } from './pieces_reducer';
-import { pieceStatesReducer} from './piece_states_reducer';
+import { gameCenterReducer } from './game_reducers/game_center_reducer';
+import { boardImageReducer } from './game_reducers/board_image_reducer';
+import { piecesReducer } from './game_reducers/pieces_reducer';
+import { pieceStatesReducer} from './game_reducers/piece_states_reducer';
 import { matchesReducer } from './matches_reducer';
-import {elementReducer} from "./element_reducer";
+import {elementReducer} from "./game_reducers/element_reducer";
+import {selectedPieceIndexReducer} from "./game_reducers/selected_piece_reducer";
 
 export const rootReducer = combineReducers({
     user: userReducer,
@@ -31,5 +32,6 @@ export const rootReducer = combineReducers({
     matches: matchesReducer,
     pieces: piecesReducer,
     elements: elementReducer,
-    pieceStates: pieceStatesReducer
+    pieceStates: pieceStatesReducer,
+    selectedPieceIndex: selectedPieceIndexReducer
 });
