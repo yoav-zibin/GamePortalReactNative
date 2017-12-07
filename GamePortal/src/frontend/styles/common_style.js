@@ -127,7 +127,8 @@ const styles = StyleSheet.create({
 
     selectGame: {
         width: width,
-        flex: 0.7
+        zIndex: 1,
+        flex: 0.9
     },
 
     welcome: {

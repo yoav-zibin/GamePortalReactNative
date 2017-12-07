@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { List, ListItem } from 'react-native-elements';
 import NavigationBar from 'react-native-navbar';
+import ModalDropdown from 'react-native-modal-dropdown';
 import { getGameSpec } from '../../backend/games/game_specs';
 import { 
     Text, 
@@ -26,8 +27,7 @@ export default class GameSpecComponent extends Component {
         let keys = Object.keys(gameSpecs);
         resetGameSpecs();
 
-        for (let i = 0; i < 10; i++) {
-            let specId = keys[i];
+        for (let specId in gameSpecs) {
 
             if (gameSpecs.hasOwnProperty(specId)) {
                 getGameSpec(specId).then(response => {
@@ -134,6 +134,14 @@ export default class GameSpecComponent extends Component {
                         }}
                     />
                 </View>
+                {/* <View style={styles.selectGame}>
+                    <ModalDropdown
+                        style={styles.gameSpecsDropDown}
+                        options={['option 1', 'option 2']}
+
+                    >
+                    </ModalDropdown>
+                </View> */}
                 <ScrollView
                     ref={ref => this.scrollView = ref}
                     styles={styles.selectGame}
