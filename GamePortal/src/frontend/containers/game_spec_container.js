@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
 import {
-    addGameSpec, switchGame, resetGameSpecs, addPiece, addMatch, resetPieceStates,
+    addGameSpecs, switchGame, resetGameSpecs, addPiece, addMatch, resetPieceStates,
     resetPieces, resetElements
 } from "../actions/game_actions";
-import { switchScreen } from "../actions/screen_actions";
+import {setLoading, switchScreen} from "../actions/screen_actions";
 
 import GameSpecComponent from '../components/game_spec_component';
 
@@ -15,7 +15,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    addGameSpec: (gameSpec) => dispatch(addGameSpec(gameSpec)),
+    addGameSpecs: (gameSpecs) => dispatch(addGameSpecs(gameSpecs)),
     resetGameSpecs: () => dispatch(resetGameSpecs()),
     resetPieces: () => dispatch(resetPieces()),
     resetPieceStates: () => dispatch(resetPieceStates()),
@@ -23,7 +23,8 @@ const mapDispatchToProps = dispatch => ({
     addPiece: (piece) => dispatch(addPiece(piece)),
     switchScreen: screen => dispatch(switchScreen(screen)),
     switchGame: (gameSpec) => dispatch(switchGame(gameSpec)),
-    addMatch: (match) => dispatch(addMatch(match))
+    addMatch: (match) => dispatch(addMatch(match)),
+    setLoading: (loading) => dispatch(setLoading(loading))
 });
 
 export const GameSpecContainer = connect(mapStateToProps, mapDispatchToProps)(GameSpecComponent);

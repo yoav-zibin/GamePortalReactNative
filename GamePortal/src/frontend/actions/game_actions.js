@@ -5,6 +5,14 @@ export function addGameSpec(gameSpec) {
     }
 }
 
+export function addGameSpecs(gameSpecs) {
+    console.log("add game specs action");
+    return {
+        type: 'ADD_GAME_SPECS',
+        gameSpecs: gameSpecs
+    }
+}
+
 export function resetGameSpecs() {
     return {
         type: 'RESET_GAME_SPECS'
