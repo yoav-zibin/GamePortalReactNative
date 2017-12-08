@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import { List, ListItem } from 'react-native-elements';
+import React, {Component} from 'react';
+import {List, ListItem} from 'react-native-elements';
 import NavigationBar from 'react-native-navbar';
 import ModalDropdown from 'react-native-modal-dropdown';
-import { getGameSpec } from '../../backend/games/game_specs';
-import { 
-    Text, 
-    View, 
-    TextInput, 
-    ScrollView, 
-    AsyncStorage 
+import {getGameSpec} from '../../backend/games/game_specs';
+import {
+    Text,
+    View,
+    TextInput,
+    ScrollView,
+    AsyncStorage
 } from 'react-native';
 
 import * as firebase from 'firebase';
@@ -22,10 +22,12 @@ export default class GameSpecComponent extends Component {
     }
 
     _loadGameSpecs(gameSpecs) {
-        
-        const { addGameSpec, resetGameSpecs } = this.props;
-        let keys = Object.keys(gameSpecs);
+
+        const {addGameSpec, resetGameSpecs, setLoading} = this.props;
+
         resetGameSpecs();
+
+        let duplicateMap = {};
 
         for (let specId in gameSpecs) {
 
@@ -34,6 +36,9 @@ export default class GameSpecComponent extends Component {
                     let gameSpec = {};
 
                     gameSpec.specId = specId;
+
+                    duplicateMap[gameSpec.specId] = 0;
+
                     gameSpec.specName = response.gameName;
                     gameSpec.iconSmall = response.gameIcon50x50;
                     gameSpec.iconLarge = response.gameIcon512x512;
@@ -45,6 +50,7 @@ export default class GameSpecComponent extends Component {
                     gameSpec.boardMaxscale = response.board.maxscale;
 
                     addGameSpec(gameSpec);
+
                 }).catch(error => console.log(error));
             }
         }
@@ -52,26 +58,48 @@ export default class GameSpecComponent extends Component {
 
     componentWillMount() {
 
-        AsyncStorage.getItem('userData').then(udJSON => {
-            let userData = JSON.parse(udJSON);
+        const { addGameSpecs } = this.props;
 
-            firebase.database().ref('gameBuilder/gameSpecs/').once('value', gameSpecs => {
-                let specsParsed = gameSpecs.val();
+        firebase.database().ref('gameBuilder/gameSpecs/').once('value').then(response => {
 
-                this._loadGameSpecs(specsParsed);
+            let parsedGameSpecs = [];
+            response.forEach(gameSpecRAW => {
+
+                let gameSpec = gameSpecRAW.val();
+                let parsedGameSpec = {};
+
+                parsedGameSpec.specId = gameSpecRAW.key;
+                console.log(parsedGameSpec.specId);
+                parsedGameSpec.specName = gameSpec.gameName;
+                parsedGameSpec.iconSmall = gameSpec.gameIcon50x50;
+                parsedGameSpec.iconLarge = gameSpec.gameIcon512x512;
+                parsedGameSpec.wikiURL = gameSpec.wikipediaUrl;
+                parsedGameSpec.tutorial = gameSpec.tutorialYoutubeVideo;
+                parsedGameSpec.boardBackGroundColor = gameSpec.board.backgroundColor;
+                parsedGameSpec.boardImageId = gameSpec.board.imageId;
+                parsedGameSpec.boardMaxscale = gameSpec.board.maxscale;
+
+                parsedGameSpecs.push(parsedGameSpec);
+
             });
+
+            addGameSpecs(parsedGameSpecs)
         });
     }
 
-    
+
     _chooseGame(gameSpec) {
-        const { switchGame, switchScreen, groupId, resetPieces, resetElements, resetPieceStates} = this.props;
+        const {switchGame, switchScreen, groupId, resetPieces, resetElements, resetPieceStates} = this.props;
         // Update current game and add a new match
+
         let specId = gameSpec.specId;
         let currentPieces = {};
         let matchId;
 
         getGameSpec(specId).then(response => {
+
+            console.log(response);
+
             let pieces = response.pieces;
             let indexList = Object.keys(pieces);
 
@@ -92,20 +120,20 @@ export default class GameSpecComponent extends Component {
 
             for (let i = 0; i < indexList.length; i++) {
                 firebase.database()
-                        .ref('gamePortal/groups/' + groupId + '/matches/' + matchId + '/pieces/')
-                        .child(i.toString())
-                        .set(currentPieces[i])
-                        .catch(error => console.log(error));
+                    .ref('gamePortal/groups/' + groupId + '/matches/' + matchId + '/pieces/')
+                    .child(i.toString())
+                    .set(currentPieces[i])
+                    .catch(error => console.log(error));
             }
 
             gameSpec.matchId = matchId;
+
 
             resetPieces();
             resetElements();
             resetPieceStates();
             switchGame(gameSpec);
 
-            switchScreen('CurrentGame');
         });
 
     }
@@ -145,8 +173,9 @@ export default class GameSpecComponent extends Component {
                 <ScrollView
                     ref={ref => this.scrollView = ref}
                     styles={styles.selectGame}
-                    onContentSizeChange={(contentWidth, contentHeight)=>{
-                    this.scrollView.scrollToEnd({animated: true});}}
+                    onContentSizeChange={(contentWidth, contentHeight) => {
+                        this.scrollView.scrollToEnd({animated: true});
+                    }}
                 >
                     <List style={styles.gameSpecs}>
                         {

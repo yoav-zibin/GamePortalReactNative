@@ -5,6 +5,14 @@ export function addGameSpec(gameSpec) {
     }
 }
 
+export function addGameSpecs(gameSpecs) {
+    console.log("add game specs action");
+    return {
+        type: 'ADD_GAME_SPECS',
+        gameSpecs: gameSpecs
+    }
+}
+
 export function resetGameSpecs() {
     return {
         type: 'RESET_GAME_SPECS'
@@ -84,12 +92,20 @@ export function setPieceState(pieceIndex, lastUpdatedOn, newState) {
     }
 }
 
-export function setPieceLocation(pieceIndex, x, y) {
+export function setPieceLocation(pieceIndex, x, y, newZ) {
     return {
         type: 'SET_PIECE_LOCATION',
         pieceIndex: pieceIndex,
         x: x,
-        y: y
+        y: y,
+        newZ: newZ
+    }
+}
+
+export function setSelectedPiece(pieceIndex) {
+    return {
+        type: 'SET_SELECTED_PIECE',
+        pieceIndex: pieceIndex
     }
 }
 
@@ -108,5 +124,13 @@ export function resetPieceStates() {
 export function resetElements() {
     return {
         type: 'RESET_ELEMENTS'
+    }
+}
+
+export function togglePiece(pieceIndex, numberOfImages) {
+    return {
+        type: 'TOGGLE_PIECE',
+        pieceIndex: pieceIndex,
+        numberOfImages: numberOfImages
     }
 }

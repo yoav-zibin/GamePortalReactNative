@@ -1,4 +1,4 @@
-import { initialState } from '../store/initial_state';
+import { initialState } from '../../store/initial_state';
 
 export const piecesReducer = (state = initialState.pieces, action) => {
     switch (action.type) {
@@ -6,6 +6,7 @@ export const piecesReducer = (state = initialState.pieces, action) => {
         case 'RESET_PIECES' : {
             return {};
         }
+
 
         case 'ADD_PIECE': {
             let pieceIndex = action.index;
