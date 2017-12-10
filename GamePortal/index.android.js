@@ -1,28 +1,18 @@
 import React, {Component} from 'react';
-import {
-    AppRegistry, BackHandler, View
-} from 'react-native';
-
-import {
-    Provider
-} from 'react-redux';
-
+import {AppRegistry, BackHandler, View} from 'react-native';
+import {Provider} from 'react-redux';
 import * as firebase from 'firebase';
-
 import store from './src/frontend/store/configure_store';
 import styles from './src/frontend/styles/common_style';
-import { SplashContainer } from './src/frontend/containers/splash_container';
-import { LoginDefaultContainer } from './src/frontend/containers/android/login_default_container'
-import { HomeContainer } from './src/frontend/containers/home_container'
-import { LoginEmailContainer } from "./src/frontend/containers/login_email_container";
-import { CreateAccountContainer } from "./src/frontend/containers/create_account_container";
-import { ChatContainer } from './src/frontend/containers/chat_container';
-import { GameSpecContainer } from './src/frontend/containers/game_spec_container';
-import { GameCenterContainer } from './src/frontend/containers/game_center_container'
-
-
-import {switchScreen} from "./src/frontend/actions/screen_actions";
-import {CreateGroupContainer} from "./src/frontend/containers/create_group_container";
+import {SplashContainer} from "./src/screens/splash/container";
+import {switchScreen} from "./src/shared/screen/actions";
+import {AndroidLoginDefaultContainer} from "./src/screens/login/default/container";
+import {LoginEmailContainer} from "./src/screens/login/email/login/container";
+import {CreateAccountContainer} from "./src/screens/login/email/create/container";
+import {HomeContainer} from "./src/screens/home/container";
+import {CreateGroupContainer} from "./src/screens/group_creator/container";
+import {ChatContainer} from "./src/screens/chat/container";
+import {GameCenterContainer} from "./src/screens/game_center/container";
 
 
 // Initialize Firebase
@@ -37,8 +27,8 @@ firebase.initializeApp(firebaseConfig);
 
 export default class GamePortalReactNative extends Component {
 
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();
 
         this.state = {
             screen: store.getState().screen.screen
@@ -77,6 +67,9 @@ export default class GamePortalReactNative extends Component {
                 case 'Chat':
                     newScreen = 'Home';
                     break;
+                case 'GameCenter':
+                    newScreen = 'Chat';
+                    break;
                 case 'Splash':
                     return false;
             }
@@ -94,7 +87,7 @@ export default class GamePortalReactNative extends Component {
 
         switch (screen) {
             case 'LoginDefault':
-                return (<LoginDefaultContainer />);
+                return (<AndroidLoginDefaultContainer />);
             case 'LoginEmail':
                 return (<LoginEmailContainer />);
             case 'CreateAccount':
@@ -105,9 +98,7 @@ export default class GamePortalReactNative extends Component {
                 return (<CreateGroupContainer />);
             case 'Chat':
                 return (<ChatContainer />);
-            case 'GameSpec':
-                return (<GameSpecContainer />);
-            case 'CurrentGame':
+            case 'GameCenter':
                 return (<GameCenterContainer />);
             default:
                 return (<SplashContainer/>);

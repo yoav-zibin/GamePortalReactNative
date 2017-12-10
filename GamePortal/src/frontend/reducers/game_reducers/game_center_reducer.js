@@ -1,6 +1,6 @@
 import { initialState } from '../../store/initial_state';
 
-export const gameCenterReducer = (state = initialState.gameCenter, action) => {
+export const gameCenterReducer = (state = initialState.oldGameCenter, action) => {
     switch (action.type) {
         case 'SWITCH_GAME':
             let game = action.game;

@@ -13,7 +13,7 @@ export const initialState = {
     },
 
     home: {
-        tab: 'tabFriends'
+        tab: 'tabGroups'
     },
 
     recentlyConnected: {
@@ -37,13 +37,19 @@ export const initialState = {
     gameSpecs: [],
 
     gameCenter: {
+        tab: 'tabCurrentMatches',
+        matches: {},
+        gameSpecs: {}
+    },
+
+    /*oldGameCenter: {
         currentGameId: undefined,
         currentGameName: undefined,
         boardImageId: undefined,
         matchId: undefined,
         scaleHeight: 0.0,
         scaleWidth: 0.0
-    },
+    },*/
 
     matches: [],
 
