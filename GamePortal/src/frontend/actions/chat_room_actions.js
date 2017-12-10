@@ -1,16 +1,6 @@
-/*
-Handle actions related to chat room
- */
 
 import * as firebase from 'firebase';
 
-export function switchChatRoom(group) {
-    return {
-        type: 'SWITCH_ROOM',
-        groupId: group.groupId,
-        groupName: group.groupName
-    }
-}
 
 // Add a message
 export function addMessage(message) {

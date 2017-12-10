@@ -3,9 +3,9 @@ import {
     addGameSpecs, switchGame, resetGameSpecs, addPiece, addMatch, resetPieceStates,
     resetPieces, resetElements
 } from "../actions/game_actions";
-import {setLoading, switchScreen} from "../actions/screen_actions";
 
 import GameSpecComponent from '../components/game_spec_component';
+import {setLoading, switchScreen} from "../../shared/screen/actions";
 
 const mapStateToProps = state => ({
     loading: state.screen.loading,

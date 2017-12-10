@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
 
-    signoutButton: {
+    signOutButtonHome: {
         height: 10,
         marginRight: 10
     },
