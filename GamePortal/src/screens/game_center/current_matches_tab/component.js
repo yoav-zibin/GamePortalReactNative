@@ -6,7 +6,18 @@ import {List, ListItem} from 'react-native-elements';
 export default class CurrentMatchesTabComponent extends Component {
     render() {
 
-        const { gameSpecs } = this.props;
+        const { gameForOngoingMatches } = this.props;
+
+        if (gameForOngoingMatches === null) {
+            return this.renderGameList();
+        } else {
+            return this.renderMatchList();
+        }
+    }
+
+    renderGameList() {
+
+        const {gameSpecs, setGameForOngoingMatches } = this.props;
 
         let currentGames = this.sortAndGroupMatchesByGame();
 
@@ -32,12 +43,51 @@ export default class CurrentMatchesTabComponent extends Component {
                                     title={gameSpecs[game.gameSpecId]['gameName']}
                                     subtitle={game.matches.length + " games in progress"}
                                     avatar={{uri: gameSpecs[game.gameSpecId]['gameIcon50x50']}}
-                                    onPress={() => alert(game.gameSpecId)}
+                                    onPress={() => setGameForOngoingMatches(game.gameSpecId)}
                                 />
                             ))
                         }
                     </List>
                 </ScrollView>
+            </View>
+        );
+    }
+
+    renderMatchList() {
+        let { gameForOngoingMatches } = this.props;
+
+        let currentGames = this.sortAndGroupMatchesByGame();
+
+        for (let i = 0; i < currentGames.length; i++) {
+            if (currentGames[i].gameSpecId === gameForOngoingMatches) {
+                let matches = currentGames[i].matches;
+
+                return (
+                    <View>
+                        <ScrollView>
+                            <List>
+                                {
+                                    matches.map((match, index) => (
+                                        <ListItem
+                                            key={index}
+                                            title={match.matchId}
+                                            subtitle={"Move last made: " + match.lastUpdatedOn}
+                                            onPress={() => alert(match.matchId)}
+                                        />
+                                    ))
+                                }
+                            </List>
+                        </ScrollView>
+                    </View>
+                );
+            }
+        }
+
+        return (
+            <View>
+                <Text>
+                    No ongoing matches for game
+                </Text>
             </View>
         );
     }
