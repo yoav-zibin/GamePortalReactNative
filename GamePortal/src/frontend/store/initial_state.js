@@ -39,7 +39,8 @@ export const initialState = {
     gameCenter: {
         tab: 'tabCurrentMatches',
         matches: {},
-        gameSpecs: {}
+        gameSpecs: {},
+        gameForOngoingMatches: null
     },
 
     /*oldGameCenter: {

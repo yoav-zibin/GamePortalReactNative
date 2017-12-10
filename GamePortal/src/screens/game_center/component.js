@@ -22,19 +22,13 @@ export default class GameCenterComponent extends Component {
                 gameSpecsObj[gameSpecRAW.key] = gameSpecRAW.val();
             });
 
-            console.log("setting gamespecs");
-
             setGameSpecs(gameSpecsObj);
-
-            console.log("Getting matches");
 
             firebase.database().ref('gamePortal/groups/' + groupId + '/matches').on('value', matches => {
                 let matchesObj = {};
                 matches.forEach(matchRAW => {
                     matchesObj[matchRAW.key] = matchRAW.val();
                 });
-
-                console.log("setting matches");
 
                 setMatches(matchesObj);
                 setLoading(false);
