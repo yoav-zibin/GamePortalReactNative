@@ -72,7 +72,7 @@ export default class CurrentMatchesTabComponent extends Component {
                                             key={index}
                                             title={match.matchId}
                                             subtitle={"Move last made: " + match.lastUpdatedOn}
-                                            onPress={() => alert(match.matchId)}
+                                            onPress={() => this.goToMatch(gameForOngoingMatches, match.matchId)}
                                         />
                                     ))
                                 }
@@ -90,6 +90,13 @@ export default class CurrentMatchesTabComponent extends Component {
                 </Text>
             </View>
         );
+    }
+
+    goToMatch(gameId, matchId) {
+        const { setGameSpecId, setMatchId, switchScreen } = this.props;
+        setGameSpecId(gameId);
+        setMatchId(matchId);
+        switchScreen('GameRenderer')
     }
 
     sortAndGroupMatchesByGame() {

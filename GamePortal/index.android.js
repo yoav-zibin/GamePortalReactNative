@@ -13,6 +13,7 @@ import {HomeContainer} from "./src/screens/home/container";
 import {CreateGroupContainer} from "./src/screens/group_creator/container";
 import {ChatContainer} from "./src/screens/chat/container";
 import {GameCenterContainer} from "./src/screens/game_center/container";
+import {GameRendererContainer} from "./src/screens/game_renderer/container";
 
 
 // Initialize Firebase
@@ -70,6 +71,9 @@ export default class GamePortalReactNative extends Component {
                 case 'GameCenter':
                     newScreen = 'Chat';
                     break;
+                case 'GameRenderer':
+                    newScreen = 'GameCenter';
+                    break;
                 case 'Splash':
                     return false;
             }
@@ -100,6 +104,8 @@ export default class GamePortalReactNative extends Component {
                 return (<ChatContainer />);
             case 'GameCenter':
                 return (<GameCenterContainer />);
+            case 'GameRenderer':
+                return (<GameRendererContainer />);
             default:
                 return (<SplashContainer/>);
         }

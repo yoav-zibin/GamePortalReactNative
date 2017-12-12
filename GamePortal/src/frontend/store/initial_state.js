@@ -34,8 +34,6 @@ export const initialState = {
 
     messages: [],
 
-    gameSpecs: [],
-
     gameCenter: {
         tab: 'tabCurrentMatches',
         matches: {},
@@ -43,30 +41,21 @@ export const initialState = {
         gameForOngoingMatches: null
     },
 
-    /*oldGameCenter: {
-        currentGameId: undefined,
-        currentGameName: undefined,
-        boardImageId: undefined,
-        matchId: undefined,
+    gameRenderer: {
+        gameSpecId: null,
+        matchId: null,
+        boardImage: {
+            url: null,
+            height: 0,
+            width: 0
+        },
         scaleHeight: 0.0,
-        scaleWidth: 0.0
-    },*/
-
-    matches: [],
-
-    boardImage: {
-        url: undefined,
-        dragState: undefined,
-        imageWidth: undefined,
-        imageHeight: undefined,
-        boardHeight: 0,
-        boardWidth: 0
+        scaleWidth: 0.0,
+        elements: {},
+        pieces: {},
+        pieceStates: {},
+        selectedPieceIndex: -1
     },
-
-    elements: {},
-    pieces: {},
-    pieceStates: {},
-    selectedPieceIndex: -1
 };
 
 export const elementObject = {
