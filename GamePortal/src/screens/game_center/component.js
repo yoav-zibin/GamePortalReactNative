@@ -14,7 +14,6 @@ export default class GameCenterComponent extends Component {
 
         setLoading(true);
 
-
         firebase.database().ref('gameBuilder/gameSpecs/').once('value').then(gameSpecs => {
 
             let gameSpecsObj = {};
