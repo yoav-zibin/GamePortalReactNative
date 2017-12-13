@@ -1,3 +1,14 @@
+import {combineReducers, createStore} from 'redux';
+
+import {GameRendererReducer} from "./screens/game_renderer/reducer";
+import {ChatRoomReducer, MessageReducer} from "./screens/chat/reducer";
+import {CreateGroupReducer, GroupsReducer} from "./shared/groups/reducer";
+import {HomeReducer} from "./screens/home/reducer";
+import {RecentlyConnectedReducer} from "./screens/home/active_users_tab/reducer";
+import {ScreenReducer} from "./shared/screen/reducer";
+import {UserReducer} from "./shared/user/reducer";
+import {GameCenterReducer} from "./screens/game_center/reducer";
+
 export const initialState = {
     user: {
         loggedIn: false,
@@ -58,25 +69,21 @@ export const initialState = {
     },
 };
 
-export const elementObject = {
-    width: 0,
-    height: 0,
-    images: [],
-    isDraggable: false,
-    isDrawable: false,
-    rotatableDegrees: 1,
-    elementKind: 'standard'
-};
+const rootReducer = combineReducers({
+    user: UserReducer,
+    screen: ScreenReducer,
+    home: HomeReducer,
+    recentlyConnected: RecentlyConnectedReducer,
+    createGroup: CreateGroupReducer,
+    groups: GroupsReducer,
+    messages: MessageReducer,
+    chatRoom: ChatRoomReducer,
+    gameCenter: GameCenterReducer,
+    gameRenderer: GameRendererReducer
+});
 
-export const piecesObject = {
-    deckPieceIndex: -1,
-    pieceElementId: undefined
-};
 
-export const pieceStateObject = {
-    lastUpdatedOn: 0,
-    currentImageIndex: 0,
-    x: 0,
-    y: 0,
-    zDepth: 1,
-};
+export const store = createStore(
+    rootReducer,
+    initialState,
+);

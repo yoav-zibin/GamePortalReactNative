@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 import {AppRegistry, BackHandler, View} from 'react-native';
 import {Provider} from 'react-redux';
 import * as firebase from 'firebase';
-import store from './src/frontend/store/configure_store';
-import styles from './src/frontend/styles/common_style';
+import styles from './src/resources/styles/common_style';
 import {SplashContainer} from "./src/screens/splash/container";
 import {switchScreen} from "./src/shared/screen/actions";
 import {AndroidLoginDefaultContainer} from "./src/screens/login/default/container";
@@ -14,6 +13,7 @@ import {CreateGroupContainer} from "./src/screens/group_creator/container";
 import {ChatContainer} from "./src/screens/chat/container";
 import {GameCenterContainer} from "./src/screens/game_center/container";
 import {GameRendererContainer} from "./src/screens/game_renderer/container";
+import { store } from './src/store'
 
 
 // Initialize Firebase

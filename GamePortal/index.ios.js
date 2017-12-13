@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 import {AppRegistry, View} from 'react-native';
 import {Provider} from 'react-redux';
 import * as firebase from 'firebase';
-import store from './src/frontend/store/configure_store';
-import styles from './src/frontend/styles/common_style';
+import styles from './src/resources/styles/common_style';
 import { iOSLoginDefaultContainer } from "./src/screens/login/default/container";
 import {SplashContainer} from "./src/screens/splash/container";
 import {LoginEmailContainer} from "./src/screens/login/email/login/container";
@@ -13,6 +12,7 @@ import {CreateGroupContainer} from "./src/screens/group_creator/container";
 import {ChatContainer} from "./src/screens/chat/container";
 import {GameCenterContainer} from "./src/screens/game_center/container";
 import {GameRendererContainer} from "./src/screens/game_renderer/container";
+import {store} from './src/store'
 
 
 // Initialize Firebase

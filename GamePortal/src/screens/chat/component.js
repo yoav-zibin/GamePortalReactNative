@@ -1,10 +1,10 @@
 import React, {Component} from "react";
-import styles from "../../frontend/styles/common_style";
+import styles from "../../resources/styles/common_style";
 import {ScrollView, Text, TextInput, View} from "react-native";
 import NavigationBar from 'react-native-navbar';
 import {List, ListItem} from 'react-native-elements';
 import * as firebase from 'firebase';
-import {getPublicFields} from "../../backend/users/public_fields";
+import {getPublicFields} from "../../util/firebase_public_fields";
 
 export default class ChatComponent extends Component {
 

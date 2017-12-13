@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {AsyncStorage, ScrollView, View} from "react-native";
 import {List, ListItem} from 'react-native-elements';
 import * as firebase from "firebase/index";
-import {getGroup} from "../../../backend/users/groups";
+import {getGroup} from "../../../util/firebase_groups";
 
 export default class GroupsTabComponent extends Component {
 

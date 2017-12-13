@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import styles from "../../frontend/styles/common_style";
+import styles from "../../resources/styles/common_style";
 import {AsyncStorage, Button, Image, Text, View} from "react-native";
 import Tabs from 'react-native-tabs';
 import {ActiveUsersTabContainer} from "./active_users_tab/container";
