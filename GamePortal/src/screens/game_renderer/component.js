@@ -152,7 +152,7 @@ export default class GameRendererComponent extends Component {
                         title={{title: gameName}}
                         rightButton={{
                             title: 'Back',
-                            handler: () => switchScreen('Home')
+                            handler: () => switchScreen('GameCenter')
                         }}
                     />
                 </View>
