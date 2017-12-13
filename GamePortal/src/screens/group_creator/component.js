@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import styles from "../../frontend/styles/common_style";
+import styles from "../../resources/styles/common_style";
 import {Alert, AsyncStorage, Button, Text, TextInput, View} from "react-native";
 import * as firebase from "firebase/index";
 

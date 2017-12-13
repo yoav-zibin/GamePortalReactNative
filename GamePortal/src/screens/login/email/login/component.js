@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import styles from "../../../../frontend/styles/common_style";
+import styles from "../../../../resources/styles/common_style";
 import {AsyncStorage, Button, TextInput, View} from "react-native";
 import Text from "react-native-elements/src/text/Text";
 import * as firebase from "firebase/index";
-import {firebaseConnect, saveUserObject} from "../../../../backend/users/login";
+import {firebaseConnect, saveUserObject} from "../../../../util/firebase_login";
 
 export default class LoginEmailComponent extends Component {
 

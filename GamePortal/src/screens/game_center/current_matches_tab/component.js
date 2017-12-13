@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {ScrollView, Text, View} from "react-native";
-import styles from "../../../frontend/styles/common_style";
+import styles from "../../../resources/styles/common_style";
 import {List, ListItem} from 'react-native-elements';
 
 export default class CurrentMatchesTabComponent extends Component {

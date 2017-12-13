@@ -1,9 +1,9 @@
 import React, {Component} from "react";
-import styles from "../../../frontend/styles/common_style";
+import styles from "../../../resources/styles/common_style";
 import {View, Button, ScrollView, Text, AsyncStorage} from "react-native";
 import {List, ListItem} from 'react-native-elements';
 import * as firebase from "firebase/index";
-import {getPublicFields} from "../../../backend/users/public_fields";
+import {getPublicFields} from "../../../util/firebase_public_fields";
 
 export default class ActiveUsersTabComponent extends Component {
 

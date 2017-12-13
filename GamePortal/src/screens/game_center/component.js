@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import {Text, View} from "react-native";
 import NavigationBar from 'react-native-navbar';
 import Tabs from 'react-native-tabs';
-import styles from "../../frontend/styles/common_style";
+import styles from "../../resources/styles/common_style";
 import {CurrentMatchesTabContainer} from "./current_matches_tab/container";
 import {NewMatchTabContainer} from "./new_match_tab/container";
 import * as firebase from 'firebase';

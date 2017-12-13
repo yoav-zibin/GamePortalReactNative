@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import styles from "../../../frontend/styles/common_style";
+import styles from "../../../resources/styles/common_style";
 import {Text, View} from "react-native";
 
 export default class NewMatchTabComponent extends Component {

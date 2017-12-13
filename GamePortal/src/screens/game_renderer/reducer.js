@@ -1,6 +1,6 @@
-import {initialState} from "../../frontend/store/initial_state";
+import {initialState} from "../../store";
 
-export const gameRendererReducer = (gameRendererState = initialState.gameRenderer, action) => {
+export const GameRendererReducer = (gameRendererState = initialState.gameRenderer, action) => {
 
     switch(action.type) {
 

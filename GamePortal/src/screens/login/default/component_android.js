@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
-import styles from "../../../frontend/styles/common_style";
+import styles from "../../../resources/styles/common_style";
 import {Image, Text, TouchableOpacity, View} from "react-native";
 import * as firebase from "firebase/index";
 import {GoogleSignin} from "react-native-google-signin";
 import {AccessToken, LoginManager} from "react-native-fbsdk";
-import {firebaseConnect, firebaseLoginFlow} from "../../../backend/users/login";
+import {firebaseConnect, firebaseLoginFlow} from "../../../util/firebase_login";
 
 export default class AndroidLoginDefaultComponent extends Component {
 
@@ -48,7 +48,7 @@ export default class AndroidLoginDefaultComponent extends Component {
         return (
             <TouchableOpacity onPress={() => this.facebookLogin()}>
                 <Image
-                    source={require('../../../frontend/img/login_buttons/facebook.png')}
+                    source={require('../../../resources/img/login_buttons/facebook.png')}
                 />
             </TouchableOpacity>
         );
@@ -58,7 +58,7 @@ export default class AndroidLoginDefaultComponent extends Component {
         return (
             <TouchableOpacity onPress={() => this.googleLogin()}>
                 <Image
-                    source={require('../../../frontend/img/login_buttons/google.png')}
+                    source={require('../../../resources/img/login_buttons/google.png')}
                 />
             </TouchableOpacity>
         );
@@ -70,7 +70,7 @@ export default class AndroidLoginDefaultComponent extends Component {
         return (
             <TouchableOpacity onPress={() => switchScreen('LoginEmail')}>
                 <Image
-                    source={require('../../../frontend/img/login_buttons/email.png')}
+                    source={require('../../../resources/img/login_buttons/email.png')}
                 />
             </TouchableOpacity>
         );
@@ -80,7 +80,7 @@ export default class AndroidLoginDefaultComponent extends Component {
         return (
             <TouchableOpacity onPress={() => this.anonymousLogin()}>
                 <Image
-                    source={require('../../../frontend/img/login_buttons/anonymous.png')}
+                    source={require('../../../resources/img/login_buttons/anonymous.png')}
                 />
             </TouchableOpacity>
         );

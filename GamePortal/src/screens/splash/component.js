@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
-import styles from "../../frontend/styles/common_style";
+import styles from "../../resources/styles/common_style";
 import {AsyncStorage, Button, Image, Text, View } from "react-native";
 import * as firebase from "firebase/index";
-import {firebaseConnect} from "../../backend/users/login";
+import {firebaseConnect} from "../../util/firebase_login";
 
 export default class SplashComponent extends Component {
 
