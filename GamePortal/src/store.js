@@ -49,7 +49,10 @@ export const initialState = {
         tab: 'tabCurrentMatches',
         matches: {},
         gameSpecs: {},
-        gameForOngoingMatches: null
+        gameForOngoingMatches: null,
+        recentlyAddedGames: [],
+        previouslyPlayedGames: [],
+        searchResults: []
     },
 
     gameRenderer: {

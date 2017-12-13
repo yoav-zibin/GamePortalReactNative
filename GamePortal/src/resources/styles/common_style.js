@@ -176,6 +176,27 @@ const styles = StyleSheet.create({
 
     offline: {
         color: '#b40213'
+    },
+
+    newMatchContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        alignItems: 'center',
+        backgroundColor: 'white',
+    },
+
+    newMatchSection: {
+        flex: 0.3,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: width
+    },
+
+    newMatchIcon: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 });
 
