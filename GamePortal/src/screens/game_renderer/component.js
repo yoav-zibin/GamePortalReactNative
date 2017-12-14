@@ -107,8 +107,8 @@ export default class GameRendererComponent extends Component {
                             let element = elements[piece.pieceElementId];
 
                             if (element.isDraggable) {
-                                let fingerX = event.nativeEvent.pageX;
-                                let fingerY = event.nativeEvent.pageY;
+                                let fingerX = event.nativeEvent.pageX - event.nativeEvent.locationX;
+                                let fingerY = event.nativeEvent.pageY - event.nativeEvent.locationY;
                                 let percentX = (fingerX / (boardImage.width * scale)) * 100;
                                 let percentY = ((fingerY - (screenHeight * 0.1)) / (boardImage.height * scale)) * 100;
                                 setPieceLocation(pieceIndex, percentX, percentY, false);
@@ -117,8 +117,8 @@ export default class GameRendererComponent extends Component {
                         onResponderRelease={event => {
 
                             if (element.isDraggable) {
-                                let fingerX = event.nativeEvent.pageX;
-                                let fingerY = event.nativeEvent.pageY;
+                                let fingerX = event.nativeEvent.pageX - event.nativeEvent.locationX;
+                                let fingerY = event.nativeEvent.pageY - event.nativeEvent.locationY;
                                 let percentX = (fingerX / (boardImage.width * scale)) * 100;
                                 let percentY = ((fingerY - (screenHeight * 0.1)) / (boardImage.height * scale)) * 100;
                                 setPieceLocation(pieceIndex, percentX, percentY, false);
@@ -201,7 +201,7 @@ export default class GameRendererComponent extends Component {
         if (element.elementKind === 'toggable') {
             toggleButton = (
                 <Button
-                    onPress={() => togglePiece(selectedPieceIndex, element.images.length)}
+                    onPress={() => togglePiece(selectedPieceIndex, Object.keys(element.images).length)}
                     title="T"
                 />
             );
