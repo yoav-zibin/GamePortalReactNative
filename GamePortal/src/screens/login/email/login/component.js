@@ -93,7 +93,7 @@ export default class LoginEmailComponent extends Component {
     }
 
     login() {
-        const { setLoading, setLoggedInUser, switchScreen } = this.props;
+        const { setLoading, setLoggedInUser, switchScreen, resetGroups } = this.props;
 
         setLoading(true);
 
@@ -114,6 +114,7 @@ export default class LoginEmailComponent extends Component {
                 firebaseConnect(firebaseUser.uid);
                 setLoggedInUser(firebaseUser.displayName, "https://ssl.gstatic.com/images/branding/product/1x/avatar_circle_blue_512dp.png", firebaseUser.uid);
                 setLoading(false);
+                resetGroups();
                 switchScreen('Home');
             }).catch(error => alert(error));
 

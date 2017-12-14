@@ -113,7 +113,8 @@ export default class SplashComponent extends Component {
             let userData = JSON.parse(udJSON);
             let credential = null;
 
-            if (userData !== null) {
+
+            if (userData !== null && userData.credentialType !== 'anonymous') {
 
                 if (userData.credentialType === 'facebook') {
                     credential = firebase.auth.FacebookAuthProvider.credential(userData.accessToken);

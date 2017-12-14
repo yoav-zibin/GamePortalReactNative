@@ -15,8 +15,12 @@ export const GroupsReducer = (groupState = initialState.groups, action) => {
 
     switch (action.type) {
 
+        case 'RESET_GROUPS': {
+            return [];
+        }
 
-        case 'ADD_GROUP':
+
+        case 'ADD_GROUP': {
 
             let updatedGroupList = Object.assign([], groupState);
 
@@ -89,7 +93,7 @@ export const GroupsReducer = (groupState = initialState.groups, action) => {
             }
 
             return updatedGroupList;
-
+        }
 
         default: {
             return groupState;

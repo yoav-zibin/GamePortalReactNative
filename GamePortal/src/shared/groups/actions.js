@@ -18,3 +18,9 @@ export function switchSelectUser(userId) {
         userId: userId
     }
 }
+
+export function resetGroups() {
+    return {
+        type: 'RESET_GROUPS'
+    }
+}
