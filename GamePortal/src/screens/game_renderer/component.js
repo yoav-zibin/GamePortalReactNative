@@ -5,11 +5,11 @@ import {
     Image,
     Dimensions,
     Button,
+    Text
 } from 'react-native';
 
 import * as firebase from 'firebase';
 import styles from "../../resources/styles/common_style";
-import Text from "react-native-elements/src/text/Text";
 
 export default class GameRendererComponent extends Component {
 
@@ -81,9 +81,6 @@ export default class GameRendererComponent extends Component {
                 } else {
                     let participantIndex = group.participants[user.firebaseUserId]['participantIndex'];
 
-                    console.log(piece.pieceElementId);
-                    console.log(participantIndex);
-                    console.log(pieceState);
                     if (pieceState.cardVisibility && pieceState.cardVisibility[participantIndex]) {
                         imageURL = element.images[0];
                     } else {
@@ -200,7 +197,7 @@ export default class GameRendererComponent extends Component {
 
     maybeRenderToolbar() {
         const {selectedPieceIndex, pieces, pieceStates, elements,
-            setSelectedPiece, togglePiece, rollDicePiece, user, groups, groupId} = this.props;
+            setSelectedPiece, togglePiece, rollDicePiece, shufflePieces} = this.props;
 
         if (selectedPieceIndex === -1) {
             return undefined
@@ -228,6 +225,7 @@ export default class GameRendererComponent extends Component {
         let showMeCardButton = undefined;
         let showAllCardButton = undefined;
         let hideCardButton = undefined;
+        let shuffleCardsButton = undefined;
 
         if (element.elementKind === 'toggable') {
             toggleButton = (
@@ -285,6 +283,36 @@ export default class GameRendererComponent extends Component {
             );
         }
 
+        if (element.elementKind === 'cardsDeck' || element.elementKind === 'piecesDeck') {
+            shuffleCardsButton = (
+                <Button
+                    onPress={() => {
+
+                        let piecesToShuffle = {};
+
+                        for (let pieceIndex in pieces) {
+                            if (pieces.hasOwnProperty(pieceIndex)) {
+                                let piece = pieces[pieceIndex];
+                                console.log(piece);
+                                if (parseInt(piece.deckPieceIndex) === parseInt(selectedPieceIndex)) {
+                                    piecesToShuffle[pieceIndex] = piece;
+                                }
+                            }
+                        }
+
+                        shufflePieces(piecesToShuffle);
+
+                        for (let pieceIndex in piecesToShuffle) {
+                            if (piecesToShuffle.hasOwnProperty(pieceIndex)) {
+                                this.saveState(pieceIndex);
+                            }
+                        }
+                }}
+                    title="Shuffle"
+                />
+            );
+        }
+
         return (
             <View
                 style={[styles.pieceToolbar, {
@@ -297,6 +325,7 @@ export default class GameRendererComponent extends Component {
                 {showMeCardButton}
                 {showAllCardButton}
                 {hideCardButton}
+                {shuffleCardsButton}
             </View>
         );
     }
@@ -455,6 +484,7 @@ export default class GameRendererComponent extends Component {
         let newY = changedPiece.y;
         let newZ = changedPiece.zDepth;
         let currentImageIndex = changedPiece.currentImageIndex;
+        let cardVisibility = changedPiece.cardVisibility;
 
         firebase.database()
             .ref('gamePortal/groups/' + groupId + "/matches/" + matchId + "/pieces/" + changedPieceIndex + "/currentState")
@@ -463,7 +493,8 @@ export default class GameRendererComponent extends Component {
                     x: newX,
                     y: newY,
                     zDepth: newZ,
-                    currentImageIndex: currentImageIndex
+                    currentImageIndex: currentImageIndex,
+                    cardVisibility: cardVisibility ? cardVisibility : ""
                 }
             ).then(() => {
                 firebase.database().ref('gamePortal/groups/' + groupId + "/matches/" + matchId + "/lastUpdatedOn")

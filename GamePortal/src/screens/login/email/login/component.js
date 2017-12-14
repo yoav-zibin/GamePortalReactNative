@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import styles from "../../../../resources/styles/common_style";
-import {AsyncStorage, Button, TextInput, View} from "react-native";
-import Text from "react-native-elements/src/text/Text";
+import {AsyncStorage, Button, Text, TextInput, View} from "react-native";
 import * as firebase from "firebase/index";
 import {firebaseConnect, saveUserObject} from "../../../../util/firebase_login";
 

@@ -193,6 +193,48 @@ export const GameRendererReducer = (gameRendererState = initialState.gameRendere
             });
         }
 
+        case 'SHUFFLE_PIECES': {
+            let piecesToShuffle = action.piecesToShuffle;
+            let updatedPieceStates = Object.assign({}, gameRendererState.pieceStates);
+
+            let zIndices = [];
+
+            for (let pieceIndex in piecesToShuffle) {
+                if (piecesToShuffle.hasOwnProperty(pieceIndex)) {
+                    zIndices.push(updatedPieceStates[pieceIndex].zDepth)
+                }
+            }
+
+            //https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+            let currentIndex = zIndices.length;
+            let temporaryValue = undefined;
+            let randomIndex = undefined;
+
+            while (0 !== currentIndex) {
+
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex -= 1;
+
+                // And swap it with the current element.
+                temporaryValue = zIndices[currentIndex];
+                zIndices[currentIndex] = zIndices[randomIndex];
+                zIndices[randomIndex] = temporaryValue;
+            }
+
+            let i = 0;
+            for (let pieceIndex in piecesToShuffle) {
+                if (piecesToShuffle.hasOwnProperty(pieceIndex)) {
+                    updatedPieceStates[pieceIndex].zDepth = zIndices[i];
+                    i += 1;
+                }
+            }
+
+            return Object.assign({}, gameRendererState, {
+                pieceStates: updatedPieceStates
+            });
+
+        }
+
         default: {
             return gameRendererState;
         }

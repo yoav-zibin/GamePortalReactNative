@@ -109,3 +109,10 @@ export function rollDicePiece(pieceIndex, numberOfImages) {
         numberOfImages: numberOfImages
     }
 }
+
+export function shufflePieces(piecesToShuffle) {
+    return {
+        type: 'SHUFFLE_PIECES',
+        piecesToShuffle: piecesToShuffle
+    }
+}
