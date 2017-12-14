@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import {switchScreen} from "../../../shared/screen/actions";
 import {setLoggedInUser, setLoggedOut, setLoggingIn} from "../../../shared/user/actions";
-import iOSLoginDefaultComponent from "./component_ios";
+import IOSLoginDefaultComponent from "./component_ios";
 import AndroidLoginDefaultComponent from "./component_android";
 
 
@@ -19,5 +19,5 @@ const mapDispatchToProps = dispatch => ({
     setLoggingIn: () => dispatch(setLoggingIn())
 });
 
-export const iOSLoginDefaultContainer = connect(mapStateToProps, mapDispatchToProps)(iOSLoginDefaultComponent);
+export const IOSLoginDefaultContainer = connect(mapStateToProps, mapDispatchToProps)(IOSLoginDefaultComponent);
 export const AndroidLoginDefaultContainer = connect(mapStateToProps, mapDispatchToProps)(AndroidLoginDefaultComponent);

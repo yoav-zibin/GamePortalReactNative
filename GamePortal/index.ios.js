@@ -3,7 +3,7 @@ import {AppRegistry, View} from 'react-native';
 import {Provider} from 'react-redux';
 import * as firebase from 'firebase';
 import styles from './src/resources/styles/common_style';
-import { iOSLoginDefaultContainer } from "./src/screens/login/default/container";
+import { IOSLoginDefaultContainer } from "./src/screens/login/default/container";
 import {SplashContainer} from "./src/screens/splash/container";
 import {LoginEmailContainer} from "./src/screens/login/email/login/container";
 import {CreateAccountContainer} from "./src/screens/login/email/create/container";
@@ -48,7 +48,7 @@ export default class GamePortalReactNative extends Component {
 
         switch (screen) {
             case 'LoginDefault':
-                return (<iOSLoginDefaultContainer />);
+                return (<IOSLoginDefaultContainer />);
             case 'LoginEmail':
                 return (<LoginEmailContainer />);
             case 'CreateAccount':
