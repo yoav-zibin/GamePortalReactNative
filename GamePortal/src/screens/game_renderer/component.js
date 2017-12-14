@@ -249,6 +249,7 @@ export default class GameRendererComponent extends Component {
         this.loadBackgroundImage(gameSpec);
         this.loadElements(gameSpec);
         this.loadState(match);
+        this.startLiveSync(match);
     }
 
     loadBackgroundImage(gameSpec) {
@@ -322,7 +323,6 @@ export default class GameRendererComponent extends Component {
     loadState(match) {
         const {setPieceState} = this.props;
 
-        let lastUpdatedOn = match.lastUpdatedOn;
         let pieces = match.pieces;
 
         for (let pieceIndex in pieces) {
@@ -330,10 +330,24 @@ export default class GameRendererComponent extends Component {
                 let piece = pieces[pieceIndex];
                 let pieceState = piece.currentState;
                 pieceState['isSelected'] = false;
-                setPieceState(pieceIndex, lastUpdatedOn, pieceState);
+                setPieceState(pieceIndex, pieceState);
             }
         }
 
+    }
+
+    startLiveSync() {
+        const { groupId, matchId, setPieceState } = this.props;
+
+        firebase.database().ref('gamePortal/groups/' + groupId + "/matches/" + matchId + "/pieces/").
+        on('value', pieces => {
+            pieces.forEach(pieceRAW => {
+                let pieceKey = pieceRAW.key;
+                let piece = pieceRAW.val();
+
+                setPieceState(pieceKey, piece.currentState);
+            })
+        });
     }
 
     saveState(changedPieceIndex) {

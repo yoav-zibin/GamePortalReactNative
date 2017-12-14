@@ -31,7 +31,7 @@ const mapDispatchToProps = dispatch => ({
     setBoardDimensions: (height, width) => dispatch(setBoardDimensions(height, width)),
     addElement: (elementId, elementObject) => dispatch(addElement(elementId, elementObject)),
     addImageToElement: (elementId, imageIndex, imageURL) => dispatch(addImageToElement(elementId, imageIndex, imageURL)),
-    setPieceState: (pieceIndex, lastUpdatedOn, newState) => dispatch(setPieceState(pieceIndex, lastUpdatedOn, newState)),
+    setPieceState: (pieceIndex, newState) => dispatch(setPieceState(pieceIndex, newState)),
     setPieceLocation: (pieceIndex, x, y, newZ) => dispatch(setPieceLocation(pieceIndex, x, y, newZ)),
     setSelectedPiece: (pieceIndex) => dispatch(setSelectedPiece(pieceIndex)),
     togglePiece: (pieceIndex, numberOfImages) => dispatch(togglePiece(pieceIndex, numberOfImages)),

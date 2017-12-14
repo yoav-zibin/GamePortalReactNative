@@ -107,8 +107,8 @@ export default class ChatComponent extends Component {
     renderBody() {
         return (
             <View style={styles.tabbedContainer}>
-                {this.renderMessageLog()}
                 {this.renderNewMessageEntry()}
+                {this.renderMessageLog()}
             </View>
         );
     }
