@@ -5,13 +5,13 @@ import * as firebase from "firebase/index";
 import {AccessToken, LoginManager} from "react-native-fbsdk";
 import {firebaseConnect, firebaseLoginFlow} from "../../../util/firebase_login";
 
-export default class iOSLoginDefaultComponent extends Component {
+export default class IOSLoginDefaultComponent extends Component {
 
     render() {
         const {loggingIn} = this.props;
 
         if (loggingIn) {
-            return iOSLoginDefaultComponent.renderLoggingInScreen();
+            return IOSLoginDefaultComponent.renderLoggingInScreen();
         }
 
         return this.renderLoginOptionsScreen();
@@ -101,7 +101,7 @@ export default class iOSLoginDefaultComponent extends Component {
         const { setLoggingIn } = this.props;
 
         setLoggingIn();
-        this.login(true, "anonymous", iOSLoginDefaultComponent.selectRandomUsername(), null, null);
+        this.login(true, "anonymous", IOSLoginDefaultComponent.selectRandomUsername(), null, null);
     }
 
     login(success, credentialType, credential, accessToken, message) {
