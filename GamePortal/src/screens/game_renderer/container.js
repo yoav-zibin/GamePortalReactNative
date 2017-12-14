@@ -3,7 +3,7 @@ import {setLoading, switchScreen} from "../../shared/screen/actions";
 import GameRendererComponent from "./component";
 import {
     addElement, addImageToElement, addPiece, reset, rollDicePiece, setBoardDimensions, setBoardImage, setPieceLocation,
-    setPieceState,
+    setPieceState, setPieceVisibility,
     setScale, setSelectedPiece, togglePiece
 } from "./actions";
 
@@ -20,7 +20,10 @@ const mapStateToProps = state => ({
     gameSpecs: state.gameCenter.gameSpecs,
     matches: state.gameCenter.matches,
     gameSpecId: state.gameRenderer.gameSpecId,
-    matchId: state.gameRenderer.matchId
+    matchId: state.gameRenderer.matchId,
+    user: state.user,
+    groups: state.groups,
+    groupId: state.chatRoom.groupId
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -37,7 +40,8 @@ const mapDispatchToProps = dispatch => ({
     togglePiece: (pieceIndex, numberOfImages) => dispatch(togglePiece(pieceIndex, numberOfImages)),
     rollDicePiece: (pieceIndex, numberOfImages) => dispatch(rollDicePiece(pieceIndex, numberOfImages)),
     reset: () => dispatch(reset()),
-    setLoading: loading => dispatch(setLoading(loading))
+    setLoading: loading => dispatch(setLoading(loading)),
+    setPieceVisibility: (pieceIndex, pieceVisibility) => dispatch(setPieceVisibility(pieceIndex, pieceVisibility))
 });
 
 export const GameRendererContainer = connect(mapStateToProps, mapDispatchToProps)(GameRendererComponent);

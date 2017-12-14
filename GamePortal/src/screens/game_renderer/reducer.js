@@ -145,6 +145,18 @@ export const GameRendererReducer = (gameRendererState = initialState.gameRendere
             });
         }
 
+        case 'SET_PIECE_VISIBILITY': {
+            let pieceIndex = action.pieceIndex;
+            let pieceVisibility = action.pieceVisibility;
+
+            let updatedPieceStates = Object.assign({}, gameRendererState.pieceStates);
+            updatedPieceStates[pieceIndex].cardVisibility = pieceVisibility;
+
+            return Object.assign({}, gameRendererState, {
+                pieceStates: updatedPieceStates
+            });
+        }
+
         case 'SET_SELECTED_PIECE': {
             return Object.assign({}, gameRendererState, {
                 selectedPieceIndex: action.pieceIndex
