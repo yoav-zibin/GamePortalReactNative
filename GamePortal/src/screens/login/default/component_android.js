@@ -154,10 +154,11 @@ export default class AndroidLoginDefaultComponent extends Component {
 
     finishLogin(success, payload) {
 
-        const { setLoggedInUser, switchScreen, setLoggedOut } = this.props;
+        const { setLoggedInUser, switchScreen, setLoggedOut, resetGroups } = this.props;
 
         if (success) {
             setLoggedInUser(payload.displayName, payload.photoURL, payload.uid);
+            resetGroups();
             switchScreen('Home');
         } else {
             alert(payload);
