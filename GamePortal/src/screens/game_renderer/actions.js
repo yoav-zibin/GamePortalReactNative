@@ -61,11 +61,10 @@ export function addImageToElement(elementId, imageIndex, imageURL) {
     }
 }
 
-export function setPieceState(pieceIndex, lastUpdatedOn, newState) {
+export function setPieceState(pieceIndex, newState) {
     return {
         type: 'SET_PIECE_STATE',
         pieceIndex: pieceIndex,
-        lastUpdatedOn: lastUpdatedOn,
         newState: newState
     }
 }

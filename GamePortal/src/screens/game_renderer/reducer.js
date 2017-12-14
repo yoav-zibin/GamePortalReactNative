@@ -104,18 +104,9 @@ export const GameRendererReducer = (gameRendererState = initialState.gameRendere
 
         case 'SET_PIECE_STATE': {
             let pieceIndex = action.pieceIndex;
-            let lastUpdatedOn = action.lastUpdatedOn;
             let newState = action.newState;
 
             let updatedPieceStates = Object.assign({}, gameRendererState.pieceStates);
-
-            if (updatedPieceStates.hasOwnProperty(pieceIndex)) {
-                if (updatedPieceStates[pieceIndex].lastUpdatedOn >= lastUpdatedOn) {
-                    return gameRendererState;
-                }
-            }
-
-            newState.lastUpdatedOn = lastUpdatedOn;
             updatedPieceStates[pieceIndex] = newState;
 
             return Object.assign({}, gameRendererState, {

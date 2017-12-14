@@ -13,7 +13,7 @@ export const RecentlyConnectedReducer = (recentlyConnectedState = initialState.r
                 for (let i = 0; i < newList.length; i++) {
                     if (action.user.userId === recentlyConnectedState.users[i].userId) {
                         if (action.user.timestamp === recentlyConnectedState.users[i].timestamp) {
-                            return state;
+                            return recentlyConnectedState;
                         } else {
                             newList.splice(i, 1);
                         }
