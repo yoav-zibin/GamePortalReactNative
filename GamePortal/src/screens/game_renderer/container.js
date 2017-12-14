@@ -4,7 +4,7 @@ import GameRendererComponent from "./component";
 import {
     addElement, addImageToElement, addPiece, reset, rollDicePiece, setBoardDimensions, setBoardImage, setPieceLocation,
     setPieceState, setPieceVisibility,
-    setScale, setSelectedPiece, togglePiece
+    setScale, setSelectedPiece, shufflePieces, togglePiece
 } from "./actions";
 
 const mapStateToProps = state => ({
@@ -41,7 +41,8 @@ const mapDispatchToProps = dispatch => ({
     rollDicePiece: (pieceIndex, numberOfImages) => dispatch(rollDicePiece(pieceIndex, numberOfImages)),
     reset: () => dispatch(reset()),
     setLoading: loading => dispatch(setLoading(loading)),
-    setPieceVisibility: (pieceIndex, pieceVisibility) => dispatch(setPieceVisibility(pieceIndex, pieceVisibility))
+    setPieceVisibility: (pieceIndex, pieceVisibility) => dispatch(setPieceVisibility(pieceIndex, pieceVisibility)),
+    shufflePieces: piecesToShuffle => dispatch(shufflePieces(piecesToShuffle))
 });
 
 export const GameRendererContainer = connect(mapStateToProps, mapDispatchToProps)(GameRendererComponent);
