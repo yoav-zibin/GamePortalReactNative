@@ -161,8 +161,12 @@ export const GameRendererReducer = (gameRendererState = initialState.gameRendere
         }
 
         case 'TOGGLE_PIECE': {
+            console.log("reducer time");
             let pieceIndex = action.pieceIndex;
             let numberOfImages = action.numberOfImages;
+
+            console.log("pieceIndex: " + pieceIndex);
+            console.log("numberOfImages: " + numberOfImages);
 
             let updatedPieceStates = Object.assign({}, gameRendererState.pieceStates);
 

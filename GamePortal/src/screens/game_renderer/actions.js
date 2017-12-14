@@ -88,6 +88,9 @@ export function setSelectedPiece(pieceIndex) {
 }
 
 export function togglePiece(pieceIndex, numberOfImages) {
+
+    console.log("ACTION: toggling piece " + pieceIndex + " number of images: " + numberOfImages)
+
     return {
         type: 'TOGGLE_PIECE',
         pieceIndex: pieceIndex,
