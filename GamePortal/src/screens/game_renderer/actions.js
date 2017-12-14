@@ -79,6 +79,14 @@ export function setPieceLocation(pieceIndex, x, y, newZ) {
     }
 }
 
+export function setPieceVisibility(pieceIndex, pieceVisibility) {
+    return {
+        type: 'SET_PIECE_VISIBILITY',
+        pieceIndex: pieceIndex,
+        pieceVisibility: pieceVisibility
+    }
+}
+
 export function setSelectedPiece(pieceIndex) {
     return {
         type: 'SET_SELECTED_PIECE',

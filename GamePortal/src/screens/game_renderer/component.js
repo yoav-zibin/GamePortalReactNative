@@ -44,7 +44,7 @@ export default class GameRendererComponent extends Component {
     renderer() {
         const {
             boardImage, switchScreen, elements, pieces, pieceStates, setPieceLocation, setSelectedPiece,
-            selectedPieceIndex, gameSpecs, gameSpecId
+            selectedPieceIndex, gameSpecs, gameSpecId, user, groups, groupId
         } = this.props;
 
         let renderedPieces = [];
@@ -56,6 +56,14 @@ export default class GameRendererComponent extends Component {
         let screenHeight = Dimensions.get('window').height;
         let scale = screenWidth / boardImage.width;
 
+        let group = undefined;
+
+        groups.forEach(g => {
+           if (g.groupId === groupId) {
+               group = g;
+           }
+        });
+
         for (let pieceIndex in pieces) {
             if (pieces.hasOwnProperty(pieceIndex)) {
                 let piece = pieces[pieceIndex];
@@ -66,7 +74,24 @@ export default class GameRendererComponent extends Component {
                     continue;
                 }
 
-                let imageURL = element.images[pieceState.currentImageIndex];
+                let imageURL = undefined;
+
+                if (element.elementKind !== 'card') {
+                    imageURL = element.images[pieceState.currentImageIndex];
+                } else {
+                    let participantIndex = group.participants[user.firebaseUserId]['participantIndex'];
+
+                    console.log(piece.pieceElementId);
+                    console.log(participantIndex);
+                    console.log(pieceState);
+                    if (pieceState.cardVisibility && pieceState.cardVisibility[participantIndex]) {
+                        imageURL = element.images[0];
+                    } else {
+                        imageURL = element.images[1];
+                    }
+                }
+
+
                 let width = element.width * scale;
                 let height = element.height * scale;
                 let xPos = (pieceState.x / 100) * (boardImage.width * scale);
@@ -175,7 +200,7 @@ export default class GameRendererComponent extends Component {
 
     maybeRenderToolbar() {
         const {selectedPieceIndex, pieces, pieceStates, elements,
-            setSelectedPiece, togglePiece, rollDicePiece} = this.props;
+            setSelectedPiece, togglePiece, rollDicePiece, user, groups, groupId} = this.props;
 
         if (selectedPieceIndex === -1) {
             return undefined
@@ -200,6 +225,9 @@ export default class GameRendererComponent extends Component {
 
         let toggleButton = undefined;
         let rollDiceButton = undefined;
+        let showMeCardButton = undefined;
+        let showAllCardButton = undefined;
+        let hideCardButton = undefined;
 
         if (element.elementKind === 'toggable') {
             toggleButton = (
@@ -225,6 +253,38 @@ export default class GameRendererComponent extends Component {
             );
         }
 
+        if (element.elementKind === 'card') {
+            showMeCardButton = (
+                <Button
+                    onPress={() => {
+                        this.setCardVisibility(selectedPieceIndex, "ME");
+                        this.saveState(selectedPieceIndex);
+                    }}
+                    title="Me"
+                />
+            );
+
+            showAllCardButton = (
+                <Button
+                    onPress={() => {
+                        this.setCardVisibility(selectedPieceIndex, "ALL");
+                        this.saveState(selectedPieceIndex)
+                    }}
+                    title="All"
+                />
+            );
+
+            hideCardButton = (
+                <Button
+                    onPress={() => {
+                        this.setCardVisibility(selectedPieceIndex, "NONE");
+                        this.saveState(selectedPieceIndex);
+                    }}
+                    title="Hide"
+                />
+            );
+        }
+
         return (
             <View
                 style={[styles.pieceToolbar, {
@@ -234,8 +294,45 @@ export default class GameRendererComponent extends Component {
                 {toggleButton}
                 {closeToolbarButton}
                 {rollDiceButton}
+                {showMeCardButton}
+                {showAllCardButton}
+                {hideCardButton}
             </View>
         );
+    }
+
+    setCardVisibility(pieceIndex, visibleTo) {
+        const { setPieceVisibility, groups, groupId, user } = this.props;
+
+        let group = undefined;
+
+        groups.forEach(g => {
+            if (g.groupId === groupId) {
+                group = g;
+            }
+        });
+
+
+        let pieceVisibility = {};
+
+        switch (visibleTo) {
+            case 'ME': {
+                let participantIndex = group.participants[user.firebaseUserId]['participantIndex'];
+                pieceVisibility[participantIndex] = true;
+                break;
+            }
+            case 'ALL': {
+
+                for (let participantId in group.participants) {
+                    if (group.participants.hasOwnProperty(participantId)) {
+                        let participantIndex = group.participants[participantId]['participantIndex'];
+                        pieceVisibility[participantIndex] = true;
+                    }
+                }
+            }
+        }
+
+        setPieceVisibility(pieceIndex, pieceVisibility);
     }
 
     loadMatch() {
