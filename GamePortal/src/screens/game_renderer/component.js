@@ -4,7 +4,7 @@ import {
     View,
     Image,
     Dimensions,
-    Button
+    Button,
 } from 'react-native';
 
 import * as firebase from 'firebase';
@@ -42,8 +42,7 @@ export default class GameRendererComponent extends Component {
 
     renderer() {
         const {
-            boardImage, switchScreen, setScale,
-            scaleWidth, scaleHeight, elements, pieces, pieceStates, setPieceLocation, setSelectedPiece,
+            boardImage, switchScreen, elements, pieces, pieceStates, setPieceLocation, setSelectedPiece,
             selectedPieceIndex, gameSpecs, gameSpecId
         } = this.props;
 
@@ -51,6 +50,10 @@ export default class GameRendererComponent extends Component {
 
         let gameSpec = gameSpecs[gameSpecId];
         let gameName = gameSpec['gameName'];
+
+        let screenWidth = Dimensions.get('window').width;
+        let screenHeight = Dimensions.get('window').height;
+        let scale = screenWidth / boardImage.width;
 
         for (let pieceIndex in pieces) {
             if (pieces.hasOwnProperty(pieceIndex)) {
@@ -63,10 +66,10 @@ export default class GameRendererComponent extends Component {
                 }
 
                 let imageURL = element.images[pieceState.currentImageIndex];
-                let width = element.width * scaleWidth;
-                let height = element.height * scaleHeight;
-                let xPos = pieceState.x + "%";
-                let yPos = pieceState.y + "%";
+                let width = element.width * scale;
+                let height = element.height * scale;
+                let xPos = (pieceState.x / 100) * (boardImage.width * scale);
+                let yPos = (pieceState.y / 100) * (boardImage.height * scale);
                 let zDepth = pieceState.zDepth;
 
                 let borderColor = "transparent";
@@ -104,35 +107,26 @@ export default class GameRendererComponent extends Component {
                             let element = elements[piece.pieceElementId];
 
                             if (element.isDraggable) {
-                                let pageWidth = Dimensions.get('window').width;
-                                let pageHeight = Dimensions.get('window').height;
-
                                 let fingerX = event.nativeEvent.pageX;
                                 let fingerY = event.nativeEvent.pageY;
-
-                                let percentX = ((fingerX / pageWidth) * 100) - element.width;
-                                let percentY = (fingerY / pageHeight) * 90;
-
+                                let percentX = (fingerX / (boardImage.width * scale)) * 100;
+                                let percentY = ((fingerY - (screenHeight * 0.1)) / (boardImage.height * scale)) * 100;
                                 setPieceLocation(pieceIndex, percentX, percentY, false);
                             }
                         }}
                         onResponderRelease={event => {
-                            let pageWidth = Dimensions.get('window').width;
-                            let pageHeight = Dimensions.get('window').height;
 
-                            let fingerX = event.nativeEvent.pageX;
-                            let fingerY = event.nativeEvent.pageY;
-
-                            let percentX = (fingerX / pageWidth) * 100;
-                            let percentY = ((fingerY / pageHeight) * 100) - 5;
-
-                            setPieceLocation(pieceIndex, percentX, percentY, true);
-
-                            this.saveState(pieceIndex);
+                            if (element.isDraggable) {
+                                let fingerX = event.nativeEvent.pageX;
+                                let fingerY = event.nativeEvent.pageY;
+                                let percentX = (fingerX / (boardImage.width * scale)) * 100;
+                                let percentY = ((fingerY - (screenHeight * 0.1)) / (boardImage.height * scale)) * 100;
+                                setPieceLocation(pieceIndex, percentX, percentY, false);
+                                this.saveState(pieceIndex);
+                            }
                         }}
                     >
                         <Image
-
                             source={{uri: imageURL}}
                             resizeMode="contain"
                             style={{
@@ -158,21 +152,20 @@ export default class GameRendererComponent extends Component {
                 </View>
                 <View style={styles.gameContainer}>
                     <Image
-                        style={styles.canvas}
-                        source={{uri: boardImage.url}}
-                        resizeMode="stretch"
-                        onLayout={event => {
-                            let height = event.nativeEvent.layout.height;
-                            let width = event.nativeEvent.layout.width;
-
-                            let scaleHeight = height / boardImage.height;
-                            let scaleWidth = width / boardImage.width;
-                            setScale(scaleHeight, scaleWidth);
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            bottom: 0,
+                            right: 0,
+                            zIndex: 0,
+                            width: boardImage.width * scale,
+                            height: boardImage.height * scale
                         }}
+                        source={{uri: boardImage.url}}
                     />
 
                     {renderedPieces}
-
                     {this.maybeRenderToolbar()}
                 </View>
             </View>

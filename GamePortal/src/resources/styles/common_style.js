@@ -136,6 +136,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         right: 0,
         zIndex: 0,
+        width: width
     },
 
     selectGame: {

@@ -19,7 +19,15 @@ export default class CurrentMatchesTabComponent extends Component {
 
         const {gameSpecs, setGameForOngoingMatches } = this.props;
 
-        let currentGames = this.sortAndGroupMatchesByGame();
+        let currentGamesPrePrune = this.sortAndGroupMatchesByGame();
+        let currentGames = [];
+
+        //sometimes we have matches in games that no longer exist, need to clean them out
+        currentGamesPrePrune.forEach(cg => {
+            if (gameSpecs[cg.gameSpecId] !== undefined) {
+                currentGames.push(cg);
+            }
+        });
 
         if (currentGames.length === 0) {
             return (
