@@ -2,7 +2,8 @@ import { connect } from 'react-redux';
 import {setLoading, switchScreen} from "../../shared/screen/actions";
 import GameRendererComponent from "./component";
 import {
-    addElement, addImageToElement, addPiece, reset, setBoardDimensions, setBoardImage, setPieceLocation, setPieceState,
+    addElement, addImageToElement, addPiece, reset, rollDicePiece, setBoardDimensions, setBoardImage, setPieceLocation,
+    setPieceState,
     setScale, setSelectedPiece, togglePiece
 } from "./actions";
 
@@ -34,6 +35,7 @@ const mapDispatchToProps = dispatch => ({
     setPieceLocation: (pieceIndex, x, y, newZ) => dispatch(setPieceLocation(pieceIndex, x, y, newZ)),
     setSelectedPiece: (pieceIndex) => dispatch(setSelectedPiece(pieceIndex)),
     togglePiece: (pieceIndex, numberOfImages) => dispatch(togglePiece(pieceIndex, numberOfImages)),
+    rollDicePiece: (pieceIndex, numberOfImages) => dispatch(rollDicePiece(pieceIndex, numberOfImages)),
     reset: () => dispatch(reset()),
     setLoading: loading => dispatch(setLoading(loading))
 });

@@ -9,6 +9,7 @@ import {
 
 import * as firebase from 'firebase';
 import styles from "../../resources/styles/common_style";
+import Text from "react-native-elements/src/text/Text";
 
 export default class GameRendererComponent extends Component {
 
@@ -173,7 +174,8 @@ export default class GameRendererComponent extends Component {
     }
 
     maybeRenderToolbar() {
-        const {selectedPieceIndex, pieces, pieceStates, elements, setSelectedPiece, togglePiece} = this.props;
+        const {selectedPieceIndex, pieces, pieceStates, elements,
+            setSelectedPiece, togglePiece, rollDicePiece} = this.props;
 
         if (selectedPieceIndex === -1) {
             return undefined
@@ -197,12 +199,28 @@ export default class GameRendererComponent extends Component {
         );
 
         let toggleButton = undefined;
+        let rollDiceButton = undefined;
 
         if (element.elementKind === 'toggable') {
             toggleButton = (
                 <Button
-                    onPress={() => togglePiece(selectedPieceIndex, Object.keys(element.images).length)}
-                    title="T"
+                    onPress={() => {
+                        togglePiece(selectedPieceIndex, Object.keys(element.images).length);
+                        this.saveState(selectedPieceIndex);
+                    }}
+                    title="Toggle"
+                />
+            );
+        }
+
+        if (element.elementKind === 'dice') {
+            rollDiceButton = (
+                <Button
+                    onPress={() => {
+                        rollDicePiece(selectedPieceIndex, Object.keys(element.images).length);
+                        this.saveState(selectedPieceIndex)
+                    }}
+                    title="Roll"
                 />
             );
         }
@@ -215,6 +233,7 @@ export default class GameRendererComponent extends Component {
             >
                 {toggleButton}
                 {closeToolbarButton}
+                {rollDiceButton}
             </View>
         );
     }
